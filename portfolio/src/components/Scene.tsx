@@ -9,7 +9,7 @@ import { extend } from '@react-three/fiber'
 
 // Update color constants to include satellite colors
 const COLORS = {
-  background: '#E8E6E1',  // Warm light gray
+  background: '#FDFCFB',  // Updated to new light color
   spheres: [
     '#FFE4D6',  // Soft peach
     '#FFD9D9',  // Light pink
@@ -116,7 +116,7 @@ const SATELLITE_POSITIONS: [number, number, number][] = [
 // Add satellite size variations
 const SATELLITE_SIZES = [0.08, 0.06, 0.04]
 
-// Custom shader material for gooey effect
+// Update the shader material with enhanced lighting and refraction
 const GooeyMaterial = shaderMaterial(
   {
     time: 0,
@@ -127,14 +127,20 @@ const GooeyMaterial = shaderMaterial(
   `
     varying vec3 vNormal;
     varying vec3 vPosition;
+    varying vec3 vWorldPosition;
+    varying vec3 vEyeVector;
     uniform float time;
     uniform float scale;
     
     void main() {
-      vNormal = normal;
+      vNormal = normalize(normalMatrix * normal);
       vPosition = position;
       
-      // Subtle vertex displacement
+      vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+      vWorldPosition = worldPosition.xyz;
+      vEyeVector = normalize(worldPosition.xyz - cameraPosition);
+      
+      // Enhanced vertex displacement
       float displacement = sin(position.x * 5.0 + time) * 
                          sin(position.y * 5.0 + time) * 
                          sin(position.z * 5.0 + time) * 0.01 * scale;
@@ -147,14 +153,24 @@ const GooeyMaterial = shaderMaterial(
   `
     varying vec3 vNormal;
     varying vec3 vPosition;
+    varying vec3 vWorldPosition;
+    varying vec3 vEyeVector;
     uniform vec3 color;
     uniform float time;
     
     void main() {
-      // Fresnel effect
-      vec3 viewDirection = normalize(cameraPosition - vPosition);
+      // Enhanced Fresnel effect
+      vec3 viewDirection = normalize(cameraPosition - vWorldPosition);
       float fresnelTerm = 1.0 - max(dot(viewDirection, vNormal), 0.0);
-      fresnelTerm = pow(fresnelTerm, 3.0);
+      fresnelTerm = pow(fresnelTerm, 2.0);
+      
+      // Soft shadow simulation
+      float shadowTerm = max(dot(vNormal, normalize(vec3(1.0, 1.0, 1.0))), 0.0);
+      shadowTerm = pow(shadowTerm, 0.5);
+      
+      // Refraction-like effect
+      vec3 refraction = reflect(vEyeVector, vNormal);
+      float refractionStrength = pow(1.0 - abs(dot(viewDirection, vNormal)), 2.0);
       
       // Subtle color variation based on position and time
       vec3 gradientColor = color + vec3(
@@ -163,8 +179,14 @@ const GooeyMaterial = shaderMaterial(
         sin(vPosition.z * 2.0 + time * 0.4) * 0.1
       );
       
-      // Combine effects
-      vec3 finalColor = mix(gradientColor, vec3(1.0), fresnelTerm * 0.5);
+      // Highlight color
+      vec3 highlightColor = vec3(1.0, 1.0, 1.0);
+      
+      // Combine all effects
+      vec3 finalColor = mix(gradientColor, highlightColor, fresnelTerm * 0.5);
+      finalColor = mix(finalColor, gradientColor * 0.5, (1.0 - shadowTerm) * 0.5);
+      finalColor += vec3(refractionStrength * 0.1);
+      
       gl_FragColor = vec4(finalColor, 1.0);
     }
   `
@@ -323,8 +345,17 @@ function Scene() {
           <PerspectiveCamera makeDefault position={[0, 0, 6]} />
           <OrbitControls enableZoom={false} enablePan={false} />
           
-      <ambientLight intensity={0.5} />
-          <directionalLight position={[10, 10, 5]} intensity={1} />
+          {/* Enhanced lighting setup */}
+          <ambientLight intensity={0.4} />
+          <directionalLight position={[10, 10, 5]} intensity={0.8} />
+          <pointLight position={[-5, 5, -5]} intensity={0.5} />
+          <spotLight
+            position={[5, 5, 5]}
+            angle={0.3}
+            penumbra={1}
+            intensity={0.5}
+            castShadow
+          />
           
           {/* Render core spheres */}
           {CORE_SPHERES.map((core, index) => (
