@@ -4,6 +4,7 @@ import Scene from '@/components/Scene'
 import AboutPanel from '@/components/AboutPanel'
 import styles from './page.module.css'
 import { useState, useCallback } from 'react'
+import Link from 'next/link'
 
 export default function Home() {
   const [isAboutOpen, setIsAboutOpen] = useState(false)
@@ -21,12 +22,14 @@ export default function Home() {
     <main className={styles.main}>
       <Scene />
       <div className={styles.content}>
-        <h1 className={styles.title}>James Patterson</h1>
-        <nav className={styles.navigation}>
-          <a href="#" onClick={handleAboutClick}>About Me</a>
-          <a href="/projects">Projects</a>
-          <a href="/contact">Contact</a>
-        </nav>
+        <header className={styles.header}>
+          <h1 className={styles.title}>James Patterson</h1>
+          <nav className={styles.navigation}>
+            <a href="#" onClick={handleAboutClick}>About Me</a>
+            <Link href="/projects">Projects</Link>
+            <Link href="/contact">Contact</Link>
+          </nav>
+        </header>
       </div>
       <AboutPanel 
         isOpen={isAboutOpen}

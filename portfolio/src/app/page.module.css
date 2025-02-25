@@ -49,65 +49,73 @@
   max-width: 1400px;
 }
 
-.navigation {
-  position: absolute;
-  bottom: 3.5rem;
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  padding: 2rem 2.5rem;
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  max-width: 1400px;
-  padding: 0 1.5rem;
-  z-index: 2;
-}
-
-.navigation a {
-  font-family: 'Inter', sans-serif;
-  font-size: 1.1rem;
-  color: #444444;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  letter-spacing: 0.12em;
-  font-weight: 400;
-  position: relative;
-}
-
-.navigation a::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 1px;
-  bottom: -4px;
-  left: 0;
-  background-color: #FFB07B;
-  transform: scaleX(0);
-  transform-origin: bottom right;
-  transition: transform 0.3s ease;
-}
-
-.navigation a:hover {
-  color: #FFB07B;
-}
-
-.navigation a:hover::after {
-  transform: scaleX(1);
-  transform-origin: bottom left;
+  align-items: center;
+  z-index: 20;
+  background: linear-gradient(
+    to bottom, 
+    rgba(253, 252, 251, 0.75) 0%, 
+    rgba(253, 252, 251, 0.6) 20%,
+    rgba(253, 252, 251, 0.4) 40%,
+    rgba(253, 252, 251, 0.2) 60%,
+    rgba(253, 252, 251, 0.05) 80%,
+    rgba(253, 252, 251, 0) 100%
+  );
+  backdrop-filter: blur(2px);
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .title {
-  position: absolute;
-  top: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 1400px;
-  padding: 0 1.5rem;
-  font-family: 'Inter', sans-serif;
-  font-size: 1.8rem;
-  color: #222222;
-  font-weight: 300;
+  font-size: 1.5rem;
+  font-weight: 500;
   letter-spacing: 0.02em;
-  z-index: 2;
-  text-align: left;
+  color: #222;
+  margin: 0;
+  position: relative;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+}
+
+.navigation {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.navigation a {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  letter-spacing: 0.05em;
+  position: relative;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+}
+
+.navigation a:hover {
+  color: #000;
+}
+
+.navigation a:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -4px;
+  left: 0;
+  background-color: #000;
+  transition: width 0.3s ease;
+}
+
+.navigation a:hover:after {
+  width: 100%;
 }
 
 .main ol {
@@ -244,18 +252,19 @@ a.secondary {
 }
 
 @media (max-width: 768px) {
+  .header {
+    padding: 1.5rem;
+  }
+  
   .title {
-    top: 1.5rem;
-    padding: 0 1rem;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 
   .navigation {
-    padding: 0 1rem;
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   .navigation a {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 }
