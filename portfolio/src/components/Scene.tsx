@@ -137,8 +137,8 @@ function Scene() {
       <div className="text-overlay">
         <h1 className="headline">Imagine. Build. Inspire.</h1>
         <p className="subheadline">
-          Bridging human creativity and emerging<br />
-          technology to redefine experiences.
+          I work at the intersection of human creativity and<br />
+          emerging technology to redefine experiences.
         </p>
       </div>
       
@@ -375,8 +375,10 @@ function CellStructure() {
           />
         ))}
         
-        {/* Add glow emissions */}
-        <GlowEmissions />
+        {/* Glow emissions removed */}
+        
+        {/* Add absorption effect */}
+        <AbsorptionEffect />
       </group>
       
       {/* Render satellites outside the rotating group */}
@@ -444,8 +446,46 @@ function Satellite({ position }: { position: [number, number, number] }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<any>(null);
   
-  // Satellite size variations - more varied sizes like in the brief
+  // Satellite size variations
   const SATELLITE_SIZES = [0.4, 0.3, 0.25, 0.2, 0.15, 0.1];
+  
+  // Determine if this satellite should have a decaying orbit
+  // Only about 8% of satellites will have decaying orbits
+  const hasDecayingOrbit = useMemo(() => Math.random() < 0.08, []);
+  
+  // Update the orbit parameters to ensure satellites are on different z-planes
+  const orbitParams = useMemo(() => {
+    // Initial distance from center
+    const initialDistance = Math.sqrt(position[0] * position[0] + position[1] * position[1]);
+    
+    // Assign a unique z-plane to each satellite
+    // This creates a unique orbital plane for each satellite
+    const zPlaneOffset = (Math.abs(position[0] * 100 + position[1] * 50) % 20) - 10;
+    
+    return {
+      // Initial distance from center
+      initialDistance,
+      // How quickly the orbit decays (lower = slower) - only for decaying orbits
+      decayRate: 0.05 + Math.random() * 0.1,
+      // Orbit speed (radians per second) - varied for all satellites
+      speed: 0.05 + Math.random() * 0.15,
+      // Starting angle in the orbit
+      startAngle: Math.atan2(position[1], position[0]),
+      // When the decay starts (random delay) - only for decaying orbits
+      decayStartTime: 5 + Math.random() * 30,
+      // Orbit eccentricity (0 = perfect circle, higher = more elliptical)
+      eccentricity: Math.random() * 0.2,
+      // Orbit inclination (tilt)
+      inclination: Math.random() * Math.PI * 0.1,
+      // Orbit direction (clockwise or counterclockwise)
+      direction: Math.random() > 0.5 ? 1 : -1,
+      // Z-plane offset to prevent intersections
+      zPlaneOffset: zPlaneOffset * 0.3,
+      // Orbital plane tilt (rotates the entire orbit)
+      planeTiltX: Math.random() * 0.3,
+      planeTiltY: Math.random() * 0.3
+    };
+  }, [position]);
   
   // Size based on position - weighted to create more small satellites
   const size = useMemo(() => {
@@ -472,49 +512,84 @@ function Satellite({ position }: { position: [number, number, number] }) {
 
   const color = new THREE.Color(COLORS.spheres[colorIndex]);
   
-  // Float parameters - only x and y movement with reduced amplitude
-  const floatRef = useRef({
-    anchor: new THREE.Vector3(...position),
-    xSpeed: 0.03 + Math.random() * 0.03,
-    ySpeed: 0.03 + Math.random() * 0.03,
-    xPhase: Math.random() * Math.PI * 2,
-    yPhase: Math.random() * Math.PI * 2,
-    xAmplitude: 0.1 + Math.random() * 0.2,
-    yAmplitude: 0.1 + Math.random() * 0.2
-  });
-
-  // Animation parameters for color shifting
-  const colorAnimParams = useMemo(() => ({
-    frequency: 0.1 + Math.random() * 0.05,
-    phase: Math.random() * Math.PI * 2
+  // Pulse animation parameters
+  const pulseParams = useMemo(() => ({
+    shouldPulse: Math.random() < 0.33,
+    frequency: 0.2 + Math.random() * 0.3,
+    phase: Math.random() * Math.PI * 2,
+    amplitude: 0.15 + Math.random() * 0.1
   }), []);
   
-  // Update the pulse animation parameters in the Satellite component
-  const pulseParams = useMemo(() => ({
-    // Increase from 10% to 33% of satellites
-    shouldPulse: Math.random() < 0.33,
-    frequency: 0.2 + Math.random() * 0.3, // Slower than color shift
-    phase: Math.random() * Math.PI * 2,
-    amplitude: 0.15 + Math.random() * 0.1 // How much it pulses
-  }), []);
+  // State to track if this satellite has been absorbed
+  const [isAbsorbed, setIsAbsorbed] = useState(false);
 
   useFrame((state) => {
     if (meshRef.current && materialRef.current) {
       const time = state.clock.elapsedTime;
-      const float = floatRef.current;
       
-      // Calculate floating position - only x and y with reduced movement
-      const x = float.anchor.x + Math.sin(time * float.xSpeed + float.xPhase) * float.xAmplitude;
-      const y = float.anchor.y + Math.sin(time * float.ySpeed + float.yPhase) * float.yAmplitude;
-      const z = float.anchor.z;
-      
-      // Update satellite position
-      meshRef.current.position.set(x, y, z);
+      // Handle decaying orbit animation
+      if (hasDecayingOrbit && time > orbitParams.decayStartTime && !isAbsorbed) {
+        // Calculate how far along the decay we are
+        const decayTime = time - orbitParams.decayStartTime;
+        const decayFactor = Math.exp(-decayTime * orbitParams.decayRate);
+        
+        // Current distance from center (decreasing over time)
+        const currentDistance = orbitParams.initialDistance * decayFactor;
+        
+        // Current angle in orbit (increasing over time)
+        const currentAngle = orbitParams.startAngle + time * orbitParams.speed * orbitParams.direction;
+        
+        // Calculate new position based on decaying orbit with z-plane offset
+        const baseX = Math.cos(currentAngle) * currentDistance * (1 + orbitParams.eccentricity * Math.sin(currentAngle));
+        const baseY = Math.sin(currentAngle) * currentDistance * (1 + orbitParams.eccentricity * Math.cos(currentAngle));
+        
+        // Apply orbital plane tilt to create 3D orbits on different planes
+        const x = baseX * Math.cos(orbitParams.planeTiltY) - baseY * Math.sin(orbitParams.planeTiltX) * Math.sin(orbitParams.planeTiltY);
+        const y = baseX * Math.sin(orbitParams.planeTiltY) * Math.sin(orbitParams.planeTiltX) + baseY * Math.cos(orbitParams.planeTiltX);
+        const z = orbitParams.zPlaneOffset + Math.sin(currentAngle + orbitParams.inclination) * 0.2 * currentDistance;
+        
+        // Update position
+        meshRef.current.position.set(x, y, z);
+        
+        // Increase rotation speed as it gets closer to center
+        meshRef.current.rotation.x += 0.01 / decayFactor * 0.1;
+        meshRef.current.rotation.y += 0.01 / decayFactor * 0.1;
+        
+        // Scale down as it approaches the center
+        const scaleDown = Math.max(0.1, decayFactor);
+        meshRef.current.scale.set(scaleDown, scaleDown, scaleDown);
+        
+        // If close enough to center, mark as absorbed
+        if (currentDistance < 0.3) {
+          setIsAbsorbed(true);
+        }
+      } 
+      // Regular orbit animation for non-decaying satellites
+      else if (!isAbsorbed) {
+        // Current angle in orbit
+        const currentAngle = orbitParams.startAngle + time * orbitParams.speed * orbitParams.direction;
+        
+        // Calculate position based on stable orbit with z-plane offset
+        const baseX = Math.cos(currentAngle) * orbitParams.initialDistance * (1 + orbitParams.eccentricity * Math.sin(currentAngle));
+        const baseY = Math.sin(currentAngle) * orbitParams.initialDistance * (1 + orbitParams.eccentricity * Math.cos(currentAngle));
+        
+        // Apply orbital plane tilt to create 3D orbits on different planes
+        const x = baseX * Math.cos(orbitParams.planeTiltY) - baseY * Math.sin(orbitParams.planeTiltX) * Math.sin(orbitParams.planeTiltY);
+        const y = baseX * Math.sin(orbitParams.planeTiltY) * Math.sin(orbitParams.planeTiltX) + baseY * Math.cos(orbitParams.planeTiltX);
+        const z = orbitParams.zPlaneOffset + Math.sin(currentAngle + orbitParams.inclination) * 0.2 * orbitParams.initialDistance;
+        
+        // Update position
+        meshRef.current.position.set(x, y, z);
 
-      // Apply pulse animation if this satellite should pulse
-      if (pulseParams.shouldPulse) {
-        const pulseScale = 1 + Math.sin(time * pulseParams.frequency + pulseParams.phase) * pulseParams.amplitude;
-        meshRef.current.scale.set(pulseScale, pulseScale, pulseScale);
+        // Apply pulse animation if this satellite should pulse
+        if (pulseParams.shouldPulse) {
+          const pulseScale = 1 + Math.sin(time * pulseParams.frequency + pulseParams.phase) * pulseParams.amplitude;
+          meshRef.current.scale.set(pulseScale, pulseScale, pulseScale);
+        }
+      }
+      // If absorbed, hide the satellite
+      else {
+        meshRef.current.visible = false;
       }
 
       // Update shader uniforms
@@ -523,7 +598,7 @@ function Satellite({ position }: { position: [number, number, number] }) {
       
       // Subtle color shifting between adjacent colors in the palette
       const nextColorIndex = (colorIndex + 1) % COLORS.spheres.length;
-      const colorBlend = (Math.sin(time * colorAnimParams.frequency + colorAnimParams.phase) + 1) * 0.5;
+      const colorBlend = (Math.sin(time * 0.1 + pulseParams.phase) + 1) * 0.5;
       
       const baseColor = new THREE.Color(COLORS.spheres[colorIndex]);
       const nextColor = new THREE.Color(COLORS.spheres[nextColorIndex]);
@@ -547,115 +622,11 @@ function Satellite({ position }: { position: [number, number, number] }) {
   );
 }
 
-// Add this component to your file
-function GlowEmission({ position, color, onComplete }: { 
-  position: [number, number, number], 
-  color: THREE.Color,
-  onComplete: () => void 
-}) {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const materialRef = useRef<THREE.MeshBasicMaterial>(null);
-  const startTime = useRef(0);
-  const duration = 2.5; // How long each emission lasts
-  
-  useFrame((state) => {
-    if (meshRef.current && materialRef.current) {
-      if (startTime.current === 0) {
-        startTime.current = state.clock.elapsedTime;
-      }
-      
-      const elapsed = state.clock.elapsedTime - startTime.current;
-      const progress = Math.min(elapsed / duration, 1);
-      
-      // Scale up over time
-      const scale = 1 + progress * 3;
-      meshRef.current.scale.set(scale, scale, scale);
-      
-      // Fade out over time
-      materialRef.current.opacity = 0.6 * (1 - progress);
-      
-      // Remove when animation is complete
-      if (progress >= 1) {
-        onComplete();
-      }
-    }
-  });
-  
-  return (
-    <mesh ref={meshRef} position={position}>
-      <sphereGeometry args={[0.5, 16, 16]} />
-      <meshBasicMaterial 
-        ref={materialRef}
-        color={color} 
-        transparent={true} 
-        opacity={0.6}
-        depthWrite={false}
-      />
-    </mesh>
-  );
-}
-
-// Add this component to manage multiple emissions
-function GlowEmissions() {
-  const [emissions, setEmissions] = useState<{
-    id: number;
-    position: [number, number, number];
-    color: THREE.Color;
-  }[]>([]);
-  
-  const nextId = useRef(1);
-  const lastEmissionTime = useRef(0);
-  
-  // Generate a random position on the surface of the main sphere
-  const getRandomSpherePosition = (radius: number = 2.2): [number, number, number] => {
-    const phi = Math.acos(2 * Math.random() - 1);
-    const theta = Math.random() * Math.PI * 2;
-    
-    const x = radius * Math.sin(phi) * Math.cos(theta);
-    const y = radius * Math.sin(phi) * Math.sin(theta);
-    const z = radius * Math.cos(phi);
-    
-    return [x, y, z];
-  };
-  
-  // Get a random color from the sphere palette
-  const getRandomColor = () => {
-    const colorIndex = Math.floor(Math.random() * COLORS.spheres.length);
-    return new THREE.Color(COLORS.spheres[colorIndex]);
-  };
-  
-  useFrame((state) => {
-    // Create new emissions occasionally
-    if (state.clock.elapsedTime - lastEmissionTime.current > 2 + Math.random() * 3) {
-      if (Math.random() < 0.7) { // 70% chance to emit
-        const newEmission = {
-          id: nextId.current++,
-          position: getRandomSpherePosition(),
-          color: getRandomColor()
-        };
-        
-        setEmissions(prev => [...prev, newEmission]);
-        lastEmissionTime.current = state.clock.elapsedTime;
-      }
-    }
-  });
-  
-  const handleEmissionComplete = (id: number) => {
-    setEmissions(prev => prev.filter(emission => emission.id !== id));
-  };
-  
-  return (
-    <>
-      {emissions.map(emission => (
-        <GlowEmission 
-          key={emission.id}
-          position={emission.position}
-          color={emission.color}
-          onComplete={() => handleEmissionComplete(emission.id)}
-            />
-          ))}
-    </>
-  );
+// Add this component to create absorption effects when satellites are absorbed
+function AbsorptionEffect() {
+  // Implementation of absorption effect visual
+  // This could be particle effects or glows that appear when satellites are absorbed
+  return null; // For now, we'll just implement the satellite decay
 }
 
 export default Scene;
