@@ -74,13 +74,12 @@
 }
 
 .title {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 500;
   letter-spacing: 0.02em;
   color: #222;
   margin: 0;
   position: relative;
-  text-shadow: none;
 }
 
 .navigation {
@@ -89,14 +88,13 @@
 }
 
 .navigation a {
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 500;
   color: #333;
   text-decoration: none;
   transition: all 0.3s ease;
   letter-spacing: 0.05em;
   position: relative;
-  text-shadow: none;
 }
 
 .navigation a:hover {
@@ -257,7 +255,7 @@ a.secondary {
   }
   
   .title {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
   }
 
   .navigation {
@@ -265,6 +263,6 @@ a.secondary {
   }
 
   .navigation a {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
   }
 }

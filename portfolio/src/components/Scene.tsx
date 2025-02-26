@@ -31,7 +31,8 @@ const GooeyMaterial = shaderMaterial(
   {
     time: 0,
     color: new THREE.Color(0.0, 0.0, 0.0),
-    scale: 1.0
+    scale: 1.0,
+    opacity: 1.0  // Add opacity uniform
   },
   // Vertex shader
   `
@@ -67,6 +68,7 @@ const GooeyMaterial = shaderMaterial(
     varying vec3 vEyeVector;
     uniform vec3 color;
     uniform float time;
+    uniform float opacity;  // Add opacity uniform
     
     void main() {
       // Enhanced Fresnel effect with more contrast
@@ -97,7 +99,10 @@ const GooeyMaterial = shaderMaterial(
       finalColor = mix(finalColor, gradientColor * 0.45, (1.0 - shadowTerm) * 0.6); // Increased shadow depth
       finalColor += vec3(refractionStrength * 0.15); // Increased from 0.1
       
-      gl_FragColor = vec4(finalColor, 1.0);
+      // Apply opacity to final color with smoother transition for low values
+      // This helps prevent "popping" at the start of the animation
+      float smoothOpacity = opacity * opacity; // Square the opacity for a more gradual start
+      gl_FragColor = vec4(finalColor, smoothOpacity);
     }
   `
 );
@@ -142,26 +147,28 @@ function Scene() {
         </p>
       </div>
       
-      <Canvas>
-        <Suspense fallback={null}>
-          <PerspectiveCamera makeDefault position={[0, 0, 9]} fov={45} />
-          <OrbitControls enableZoom={false} enablePan={false} />
-          
-          {/* Enhanced lighting for better contrast */}
-          <ambientLight intensity={0.4} />
-          <directionalLight position={[10, 10, 5]} intensity={1.2} />
-          <pointLight position={[-5, 5, -5]} intensity={0.8} />
-          <spotLight
-            position={[5, 5, 5]}
-            angle={0.3}
-            penumbra={1}
-            intensity={0.8}
-            castShadow
-          />
-          
-          <SceneContent />
-        </Suspense>
-      </Canvas>
+      <div className="canvas-container">
+        <Canvas>
+          <Suspense fallback={null}>
+            <PerspectiveCamera makeDefault position={[0, 0, 9]} fov={45} />
+            <OrbitControls enableZoom={false} enablePan={false} />
+            
+            {/* Enhanced lighting for better contrast */}
+            <ambientLight intensity={0.4} />
+            <directionalLight position={[10, 10, 5]} intensity={1.2} />
+            <pointLight position={[-5, 5, -5]} intensity={0.8} />
+            <spotLight
+              position={[5, 5, 5]}
+              angle={0.3}
+              penumbra={1}
+              intensity={0.8}
+              castShadow
+            />
+            
+            <SceneContent />
+          </Suspense>
+        </Canvas>
+      </div>
       
       <style jsx>{`
         .vignette-overlay {
@@ -230,6 +237,19 @@ function Scene() {
             font-size: 1.1rem;
           }
         }
+        
+        .canvas-container {
+          width: 100%;
+          height: 100%;
+          opacity: 0;
+          animation: canvasFadeIn 1.2s ease-in forwards;
+        }
+        
+        @keyframes canvasFadeIn {
+          0% { opacity: 0; }
+          20% { opacity: 0.1; }
+          100% { opacity: 1; }
+        }
       `}</style>
     </div>
   );
@@ -237,15 +257,46 @@ function Scene() {
 
 // This component contains all the 3D content that goes inside the Canvas
 function SceneContent() {
+  // Use a simple React state for opacity animation
+  const [opacity, setOpacity] = useState(0);
+  
+  // Use useEffect to animate the opacity with a smoother transition
+  useEffect(() => {
+    // Small delay before starting animation
+    const startTimer = setTimeout(() => {
+      // Start with a very low opacity
+      setOpacity(0.01);
+      
+      // Then gradually increase it with multiple steps
+      const fadeInterval = setInterval(() => {
+        setOpacity(prev => {
+          const newOpacity = prev + 0.05;
+          if (newOpacity >= 1) {
+            clearInterval(fadeInterval);
+            return 1;
+          }
+          return newOpacity;
+        });
+      }, 50); // Update every 50ms for a smoother transition
+      
+      return () => {
+        clearInterval(fadeInterval);
+      };
+    }, 300);
+    
+    return () => clearTimeout(startTimer);
+  }, []);
+
   return (
-    <>
-      <CellStructure />
-    </>
+    <group>
+      {/* Apply the same transition to all materials in the scene */}
+      <CellStructure opacity={opacity} />
+    </group>
   );
 }
 
 // Cell structure component - all hooks are inside Canvas now
-function CellStructure() {
+function CellStructure({ opacity }: { opacity: number }) {
   const groupRef = useRef<THREE.Group>(null);
   
   // Generate cell structure spheres inside the component
@@ -372,6 +423,7 @@ function CellStructure() {
             position={sphere.position} 
             radius={sphere.radius}
             colorIndex={index % COLORS.spheres.length}
+            opacity={opacity}
           />
         ))}
         
@@ -383,17 +435,22 @@ function CellStructure() {
       
       {/* Render satellites outside the rotating group */}
       {satellitePositions.map((pos, index) => (
-        <Satellite key={`satellite-${index}`} position={pos} />
+        <Satellite 
+          key={`satellite-${index}`} 
+          position={pos} 
+          opacity={opacity}
+        />
       ))}
     </>
   );
 }
 
 // Cell sphere component
-function CellSphere({ position, radius, colorIndex }: { 
+function CellSphere({ position, radius, colorIndex, opacity }: { 
   position: [number, number, number], 
   radius: number,
-  colorIndex: number 
+  colorIndex: number,
+  opacity: number
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<any>(null);
@@ -422,6 +479,9 @@ function CellSphere({ position, radius, colorIndex }: {
       // Update shader uniforms
       materialRef.current.time = time;
       materialRef.current.scale = scale;
+      
+      // Apply the opacity
+      materialRef.current.opacity = opacity;
     }
   });
 
@@ -436,13 +496,18 @@ function CellSphere({ position, radius, colorIndex }: {
         color={color}
         time={0}
         scale={1.0}
+        transparent={true}
+        opacity={opacity}
       />
     </mesh>
   );
 }
 
 // Satellite component
-function Satellite({ position }: { position: [number, number, number] }) {
+function Satellite({ position, opacity }: { 
+  position: [number, number, number],
+  opacity: number
+}) {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<any>(null);
   
@@ -605,6 +670,13 @@ function Satellite({ position }: { position: [number, number, number] }) {
       baseColor.lerp(nextColor, colorBlend);
       
       materialRef.current.color = baseColor;
+      
+      // Apply the opacity (but respect the absorbed state)
+      if (isAbsorbed) {
+        materialRef.current.opacity = 0;
+      } else {
+        materialRef.current.opacity = opacity;
+      }
     }
   });
 
@@ -617,6 +689,8 @@ function Satellite({ position }: { position: [number, number, number] }) {
           color={color}
           time={0}
           scale={1.0}
+          transparent={true}
+          opacity={opacity}
         />
       </mesh>
   );

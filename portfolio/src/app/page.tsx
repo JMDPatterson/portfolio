@@ -26,7 +26,6 @@ export default function Home() {
           <h1 className={styles.title}>James Patterson</h1>
           <nav className={styles.navigation}>
             <a href="#" onClick={handleAboutClick}>About Me</a>
-            <Link href="/projects">Projects</Link>
             <Link href="/contact">Contact</Link>
           </nav>
         </header>
