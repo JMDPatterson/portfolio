@@ -2,7 +2,7 @@
 
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, PerspectiveCamera, shaderMaterial } from '@react-three/drei'
-import { Suspense, useRef, useMemo } from 'react'
+import { Suspense, useRef, useMemo, useState, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { extend } from '@react-three/fiber'
@@ -11,16 +11,16 @@ import { extend } from '@react-three/fiber'
 const COLORS = {
   background: '#FDFCFB',
   spheres: [
-    '#FFE4D6',  // Soft peach
-    '#FFD9D9',  // Light pink
-    '#F0E6FF',  // Soft lavender
-    '#E6F0FF',  // Light blue
-    '#FFE8E8',  // Pale rose
+    '#FFD8C0',  // More saturated peach
+    '#FFD0D0',  // More saturated pink
+    '#E8D8FF',  // More saturated lavender
+    '#D8E5FF',  // More saturated light blue
+    '#FFD8D8',  // More saturated pale rose
   ],
   satellites: [
-    '#F5F5F5',  // White
-    '#FFE8E8',  // Light rose
-    '#E8F0FF',  // Light blue
+    '#FFFFFF',  // Pure white
+    '#FFE0E0',  // More saturated light rose
+    '#E0E8FF',  // More saturated light blue
     '#F0F0F5',  // Light gray
   ],
   lines: '#FFFFFF'  // White with low opacity
@@ -69,33 +69,33 @@ const GooeyMaterial = shaderMaterial(
     uniform float time;
     
     void main() {
-      // Enhanced Fresnel effect
+      // Enhanced Fresnel effect with more contrast
       vec3 viewDirection = normalize(cameraPosition - vWorldPosition);
       float fresnelTerm = 1.0 - max(dot(viewDirection, vNormal), 0.0);
-      fresnelTerm = pow(fresnelTerm, 2.0);
+      fresnelTerm = pow(fresnelTerm, 1.8); // Reduced from 2.0 for more edge highlight
       
-      // Soft shadow simulation
+      // Soft shadow simulation with more contrast
       float shadowTerm = max(dot(vNormal, normalize(vec3(1.0, 1.0, 1.0))), 0.0);
-      shadowTerm = pow(shadowTerm, 0.5);
+      shadowTerm = pow(shadowTerm, 0.4); // Reduced from 0.5 for deeper shadows
       
       // Refraction-like effect
       vec3 refraction = reflect(vEyeVector, vNormal);
       float refractionStrength = pow(1.0 - abs(dot(viewDirection, vNormal)), 2.0);
       
-      // Subtle color variation based on position and time
+      // Enhanced color variation based on position and time
       vec3 gradientColor = color + vec3(
-        sin(vPosition.x * 2.0 + time * 0.5) * 0.1,
-        sin(vPosition.y * 2.0 + time * 0.3) * 0.1,
-        sin(vPosition.z * 2.0 + time * 0.4) * 0.1
+        sin(vPosition.x * 2.0 + time * 0.5) * 0.12, // Increased from 0.1
+        sin(vPosition.y * 2.0 + time * 0.3) * 0.12, // Increased from 0.1
+        sin(vPosition.z * 2.0 + time * 0.4) * 0.12  // Increased from 0.1
       );
       
-      // Highlight color
+      // Brighter highlight color
       vec3 highlightColor = vec3(1.0, 1.0, 1.0);
       
-      // Combine all effects
-      vec3 finalColor = mix(gradientColor, highlightColor, fresnelTerm * 0.5);
-      finalColor = mix(finalColor, gradientColor * 0.5, (1.0 - shadowTerm) * 0.5);
-      finalColor += vec3(refractionStrength * 0.1);
+      // Combine all effects with enhanced contrast
+      vec3 finalColor = mix(gradientColor, highlightColor, fresnelTerm * 0.6); // Increased from 0.5
+      finalColor = mix(finalColor, gradientColor * 0.45, (1.0 - shadowTerm) * 0.6); // Increased shadow depth
+      finalColor += vec3(refractionStrength * 0.15); // Increased from 0.1
       
       gl_FragColor = vec4(finalColor, 1.0);
     }
@@ -105,8 +105,20 @@ const GooeyMaterial = shaderMaterial(
 // Extend Three.js with our custom material
 extend({ GooeyMaterial });
 
-// Main scene component
+// Main scene component - this is the wrapper that contains both HTML and Canvas
 function Scene() {
+  // Add state for animated background gradient
+  const [gradientAngle, setGradientAngle] = useState(45);
+  
+  // Subtle animation for the background gradient
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setGradientAngle(prev => (prev + 0.1) % 360);
+    }, 100);
+    
+    return () => clearInterval(interval);
+  }, []);
+  
   return (
     <div style={{ 
       width: '100vw', 
@@ -115,14 +127,18 @@ function Scene() {
       top: 0, 
       left: 0, 
       zIndex: -1,
-      background: COLORS.background 
+      background: `linear-gradient(${gradientAngle}deg, #FDFCFB 0%, #F8F6F6 35%, #F2EDED 65%, #FAF6F6 100%)`,
+      transition: 'background 1s ease'
     }}>
+      {/* Vignette overlay */}
+      <div className="vignette-overlay"></div>
+      
       {/* Text overlay */}
       <div className="text-overlay">
         <h1 className="headline">Imagine. Build. Inspire.</h1>
         <p className="subheadline">
           Bridging human creativity and emerging<br />
-          tech to redefine experiences.
+          technology to redefine experiences.
         </p>
       </div>
       
@@ -131,23 +147,39 @@ function Scene() {
           <PerspectiveCamera makeDefault position={[0, 0, 9]} fov={45} />
           <OrbitControls enableZoom={false} enablePan={false} />
           
-          {/* Enhanced lighting setup */}
+          {/* Enhanced lighting for better contrast */}
           <ambientLight intensity={0.4} />
-          <directionalLight position={[10, 10, 5]} intensity={0.8} />
-          <pointLight position={[-5, 5, -5]} intensity={0.5} />
+          <directionalLight position={[10, 10, 5]} intensity={1.2} />
+          <pointLight position={[-5, 5, -5]} intensity={0.8} />
           <spotLight
             position={[5, 5, 5]}
             angle={0.3}
             penumbra={1}
-            intensity={0.5}
+            intensity={0.8}
             castShadow
           />
           
-          <CellStructure />
+          <SceneContent />
         </Suspense>
-    </Canvas>
+      </Canvas>
       
       <style jsx>{`
+        .vignette-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          z-index: 5;
+          background: radial-gradient(
+            circle at center,
+            transparent 30%,
+            rgba(0, 0, 0, 0.03) 60%,
+            rgba(0, 0, 0, 0.07) 100%
+          );
+        }
+        
         .text-overlay {
           position: absolute;
           top: 0;
@@ -175,11 +207,11 @@ function Scene() {
         }
         
         .subheadline {
-          font-size: 1.2rem;
-          font-weight: 400;
+          font-size: 1.4rem;
+          font-weight: 500;
           letter-spacing: 0.01em;
           margin: 0;
-          color: #444;
+          color: #333;
           text-align: center;
           line-height: 1.6;
         }
@@ -195,11 +227,20 @@ function Scene() {
           }
           
           .subheadline {
-            font-size: 1rem;
+            font-size: 1.1rem;
           }
         }
       `}</style>
     </div>
+  );
+}
+
+// This component contains all the 3D content that goes inside the Canvas
+function SceneContent() {
+  return (
+    <>
+      <CellStructure />
+    </>
   );
 }
 
@@ -333,6 +374,9 @@ function CellStructure() {
             colorIndex={index % COLORS.spheres.length}
           />
         ))}
+        
+        {/* Add glow emissions */}
+        <GlowEmissions />
       </group>
       
       {/* Render satellites outside the rotating group */}
@@ -431,18 +475,27 @@ function Satellite({ position }: { position: [number, number, number] }) {
   // Float parameters - only x and y movement with reduced amplitude
   const floatRef = useRef({
     anchor: new THREE.Vector3(...position),
-    xSpeed: 0.03 + Math.random() * 0.03, // Slower movement
-    ySpeed: 0.03 + Math.random() * 0.03, // Slower movement
+    xSpeed: 0.03 + Math.random() * 0.03,
+    ySpeed: 0.03 + Math.random() * 0.03,
     xPhase: Math.random() * Math.PI * 2,
     yPhase: Math.random() * Math.PI * 2,
-    xAmplitude: 0.1 + Math.random() * 0.2, // Reduced amplitude
-    yAmplitude: 0.1 + Math.random() * 0.2  // Reduced amplitude
+    xAmplitude: 0.1 + Math.random() * 0.2,
+    yAmplitude: 0.1 + Math.random() * 0.2
   });
 
   // Animation parameters for color shifting
   const colorAnimParams = useMemo(() => ({
     frequency: 0.1 + Math.random() * 0.05,
     phase: Math.random() * Math.PI * 2
+  }), []);
+  
+  // Update the pulse animation parameters in the Satellite component
+  const pulseParams = useMemo(() => ({
+    // Increase from 10% to 33% of satellites
+    shouldPulse: Math.random() < 0.33,
+    frequency: 0.2 + Math.random() * 0.3, // Slower than color shift
+    phase: Math.random() * Math.PI * 2,
+    amplitude: 0.15 + Math.random() * 0.1 // How much it pulses
   }), []);
 
   useFrame((state) => {
@@ -457,6 +510,12 @@ function Satellite({ position }: { position: [number, number, number] }) {
       
       // Update satellite position
       meshRef.current.position.set(x, y, z);
+
+      // Apply pulse animation if this satellite should pulse
+      if (pulseParams.shouldPulse) {
+        const pulseScale = 1 + Math.sin(time * pulseParams.frequency + pulseParams.phase) * pulseParams.amplitude;
+        meshRef.current.scale.set(pulseScale, pulseScale, pulseScale);
+      }
 
       // Update shader uniforms
       materialRef.current.time = time;
@@ -475,16 +534,127 @@ function Satellite({ position }: { position: [number, number, number] }) {
   });
 
   return (
-    <mesh ref={meshRef} position={position}>
+      <mesh ref={meshRef} position={position}>
       <sphereGeometry args={[size, 32, 32]} />
-      {/* @ts-ignore */}
-      <gooeyMaterial 
+        {/* @ts-ignore */}
+        <gooeyMaterial 
+          ref={materialRef}
+          color={color}
+          time={0}
+          scale={1.0}
+        />
+      </mesh>
+  );
+}
+
+// Add this component to your file
+function GlowEmission({ position, color, onComplete }: { 
+  position: [number, number, number], 
+  color: THREE.Color,
+  onComplete: () => void 
+}) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const materialRef = useRef<THREE.MeshBasicMaterial>(null);
+  const startTime = useRef(0);
+  const duration = 2.5; // How long each emission lasts
+  
+  useFrame((state) => {
+    if (meshRef.current && materialRef.current) {
+      if (startTime.current === 0) {
+        startTime.current = state.clock.elapsedTime;
+      }
+      
+      const elapsed = state.clock.elapsedTime - startTime.current;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Scale up over time
+      const scale = 1 + progress * 3;
+      meshRef.current.scale.set(scale, scale, scale);
+      
+      // Fade out over time
+      materialRef.current.opacity = 0.6 * (1 - progress);
+      
+      // Remove when animation is complete
+      if (progress >= 1) {
+        onComplete();
+      }
+    }
+  });
+  
+  return (
+    <mesh ref={meshRef} position={position}>
+      <sphereGeometry args={[0.5, 16, 16]} />
+      <meshBasicMaterial 
         ref={materialRef}
-        color={color}
-        time={0}
-        scale={1.0}
+        color={color} 
+        transparent={true} 
+        opacity={0.6}
+        depthWrite={false}
       />
     </mesh>
+  );
+}
+
+// Add this component to manage multiple emissions
+function GlowEmissions() {
+  const [emissions, setEmissions] = useState<{
+    id: number;
+    position: [number, number, number];
+    color: THREE.Color;
+  }[]>([]);
+  
+  const nextId = useRef(1);
+  const lastEmissionTime = useRef(0);
+  
+  // Generate a random position on the surface of the main sphere
+  const getRandomSpherePosition = (radius: number = 2.2): [number, number, number] => {
+    const phi = Math.acos(2 * Math.random() - 1);
+    const theta = Math.random() * Math.PI * 2;
+    
+    const x = radius * Math.sin(phi) * Math.cos(theta);
+    const y = radius * Math.sin(phi) * Math.sin(theta);
+    const z = radius * Math.cos(phi);
+    
+    return [x, y, z];
+  };
+  
+  // Get a random color from the sphere palette
+  const getRandomColor = () => {
+    const colorIndex = Math.floor(Math.random() * COLORS.spheres.length);
+    return new THREE.Color(COLORS.spheres[colorIndex]);
+  };
+  
+  useFrame((state) => {
+    // Create new emissions occasionally
+    if (state.clock.elapsedTime - lastEmissionTime.current > 2 + Math.random() * 3) {
+      if (Math.random() < 0.7) { // 70% chance to emit
+        const newEmission = {
+          id: nextId.current++,
+          position: getRandomSpherePosition(),
+          color: getRandomColor()
+        };
+        
+        setEmissions(prev => [...prev, newEmission]);
+        lastEmissionTime.current = state.clock.elapsedTime;
+      }
+    }
+  });
+  
+  const handleEmissionComplete = (id: number) => {
+    setEmissions(prev => prev.filter(emission => emission.id !== id));
+  };
+  
+  return (
+    <>
+      {emissions.map(emission => (
+        <GlowEmission 
+          key={emission.id}
+          position={emission.position}
+          color={emission.color}
+          onComplete={() => handleEmissionComplete(emission.id)}
+            />
+          ))}
+    </>
   );
 }
 
