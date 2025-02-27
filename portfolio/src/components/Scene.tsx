@@ -2,7 +2,7 @@
 
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, PerspectiveCamera, shaderMaterial } from '@react-three/drei'
-import { Suspense, useRef, useMemo, useState, useEffect } from 'react'
+import { Suspense, useRef, useMemo, useState, useEffect, useCallback } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { extend } from '@react-three/fiber'
@@ -32,7 +32,8 @@ const GooeyMaterial = shaderMaterial(
     time: 0,
     color: new THREE.Color(0.0, 0.0, 0.0),
     scale: 1.0,
-    opacity: 1.0  // Add opacity uniform
+    opacity: 1.0,
+    isMobile: false  // Add mobile flag
   },
   // Vertex shader
   `
@@ -42,6 +43,7 @@ const GooeyMaterial = shaderMaterial(
     varying vec3 vEyeVector;
     uniform float time;
     uniform float scale;
+    uniform bool isMobile;
     
     void main() {
       vNormal = normalize(normalMatrix * normal);
@@ -51,11 +53,17 @@ const GooeyMaterial = shaderMaterial(
       vWorldPosition = worldPosition.xyz;
       vEyeVector = normalize(worldPosition.xyz - cameraPosition);
       
-      // Enhanced vertex displacement
-      float displacement = sin(position.x * 5.0 + time) * 
-                         sin(position.y * 5.0 + time) * 
-                         sin(position.z * 5.0 + time) * 0.01 * scale;
-                         
+      // Simplified displacement for mobile
+      float displacement;
+      if (isMobile) {
+        displacement = sin(position.x * 4.0 + time) * 
+                      sin(position.y * 4.0 + time) * 0.008 * scale;
+      } else {
+        displacement = sin(position.x * 5.0 + time) * 
+                      sin(position.y * 5.0 + time) * 
+                      sin(position.z * 5.0 + time) * 0.01 * scale;
+      }
+                      
       vec3 newPosition = position + normal * displacement;
       gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
     }
@@ -68,40 +76,52 @@ const GooeyMaterial = shaderMaterial(
     varying vec3 vEyeVector;
     uniform vec3 color;
     uniform float time;
-    uniform float opacity;  // Add opacity uniform
+    uniform float opacity;
+    uniform bool isMobile;
     
     void main() {
-      // Enhanced Fresnel effect with more contrast
+      // Simplified calculations for mobile
       vec3 viewDirection = normalize(cameraPosition - vWorldPosition);
       float fresnelTerm = 1.0 - max(dot(viewDirection, vNormal), 0.0);
-      fresnelTerm = pow(fresnelTerm, 1.8); // Reduced from 2.0 for more edge highlight
+      fresnelTerm = pow(fresnelTerm, isMobile ? 1.6 : 1.8);
       
-      // Soft shadow simulation with more contrast
       float shadowTerm = max(dot(vNormal, normalize(vec3(1.0, 1.0, 1.0))), 0.0);
-      shadowTerm = pow(shadowTerm, 0.4); // Reduced from 0.5 for deeper shadows
+      shadowTerm = pow(shadowTerm, isMobile ? 0.5 : 0.4);
       
-      // Refraction-like effect
-      vec3 refraction = reflect(vEyeVector, vNormal);
-      float refractionStrength = pow(1.0 - abs(dot(viewDirection, vNormal)), 2.0);
+      // Skip refraction calculation on mobile
+      float refractionStrength = 0.0;
+      if (!isMobile) {
+        vec3 refraction = reflect(vEyeVector, vNormal);
+        refractionStrength = pow(1.0 - abs(dot(viewDirection, vNormal)), 2.0);
+      }
       
-      // Enhanced color variation based on position and time
-      vec3 gradientColor = color + vec3(
-        sin(vPosition.x * 2.0 + time * 0.5) * 0.12, // Increased from 0.1
-        sin(vPosition.y * 2.0 + time * 0.3) * 0.12, // Increased from 0.1
-        sin(vPosition.z * 2.0 + time * 0.4) * 0.12  // Increased from 0.1
-      );
+      // Simplified color variation for mobile
+      vec3 gradientColor;
+      if (isMobile) {
+        gradientColor = color + vec3(
+          sin(vPosition.x * 1.5 + time * 0.4) * 0.1,
+          sin(vPosition.y * 1.5 + time * 0.2) * 0.1,
+          sin(vPosition.z * 1.5 + time * 0.3) * 0.1
+        );
+      } else {
+        gradientColor = color + vec3(
+          sin(vPosition.x * 2.0 + time * 0.5) * 0.12,
+          sin(vPosition.y * 2.0 + time * 0.3) * 0.12,
+          sin(vPosition.z * 2.0 + time * 0.4) * 0.12
+        );
+      }
       
-      // Brighter highlight color
       vec3 highlightColor = vec3(1.0, 1.0, 1.0);
       
-      // Combine all effects with enhanced contrast
-      vec3 finalColor = mix(gradientColor, highlightColor, fresnelTerm * 0.6); // Increased from 0.5
-      finalColor = mix(finalColor, gradientColor * 0.45, (1.0 - shadowTerm) * 0.6); // Increased shadow depth
-      finalColor += vec3(refractionStrength * 0.15); // Increased from 0.1
+      // Combine effects with mobile optimizations
+      vec3 finalColor = mix(gradientColor, highlightColor, fresnelTerm * (isMobile ? 0.5 : 0.6));
+      finalColor = mix(finalColor, gradientColor * 0.45, (1.0 - shadowTerm) * (isMobile ? 0.5 : 0.6));
       
-      // Apply opacity to final color with smoother transition for low values
-      // This helps prevent "popping" at the start of the animation
-      float smoothOpacity = opacity * opacity; // Square the opacity for a more gradual start
+      if (!isMobile) {
+        finalColor += vec3(refractionStrength * 0.15);
+      }
+      
+      float smoothOpacity = opacity * opacity;
       gl_FragColor = vec4(finalColor, smoothOpacity);
     }
   `
@@ -110,19 +130,77 @@ const GooeyMaterial = shaderMaterial(
 // Extend Three.js with our custom material
 extend({ GooeyMaterial });
 
+// Add before Scene component
+type PerformanceTier = 'low' | 'medium' | 'high';
+
+function getPerformanceTier(): PerformanceTier {
+  // Check if running on mobile
+  const isMobile = window.innerWidth <= 768;
+  if (!isMobile) return 'high';
+
+  // Use hardware concurrency as a rough estimate of device capability
+  const cores = navigator.hardwareConcurrency || 4;
+  
+  // Check if device has coarse pointer (usually means touch screen)
+  const hasCoarsePointer = window.matchMedia('(any-pointer: coarse)').matches;
+  
+  // Simple benchmark - create and delete many objects
+  const startTime = performance.now();
+  for(let i = 0; i < 1000; i++) {
+    const obj: { test?: number } = { test: i };
+    delete obj.test;
+  }
+  const endTime = performance.now();
+  const benchmarkScore = endTime - startTime;
+
+  // Determine tier based on device capabilities
+  if (cores <= 4 || benchmarkScore > 5 || (hasCoarsePointer && cores <= 6)) {
+    return 'low';
+  } else if (cores <= 6 || benchmarkScore > 2) {
+    return 'medium';
+  }
+  return 'high';
+}
+
 // Main scene component - this is the wrapper that contains both HTML and Canvas
 function Scene() {
-  // Add state for animated background gradient
   const [gradientAngle, setGradientAngle] = useState(45);
+  const [isMobile, setIsMobile] = useState(false);
+  const [performanceTier, setPerformanceTier] = useState<PerformanceTier>('high');
+  const [dpr, setDpr] = useState(1); // Default to 1 for SSR
   
-  // Subtle animation for the background gradient
+  // Performance detection
+  useEffect(() => {
+    const tier = getPerformanceTier();
+    setPerformanceTier(tier);
+  }, []);
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+      // Update performance tier on resize
+      setPerformanceTier(getPerformanceTier());
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Reduce background gradient animation frequency for low-end devices
   useEffect(() => {
     const interval = setInterval(() => {
       setGradientAngle(prev => (prev + 0.1) % 360);
-    }, 100);
+    }, performanceTier === 'low' ? 200 : 100);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [performanceTier]);
+
+  useEffect(() => {
+    // Update DPR once we're on the client side
+    setDpr(performanceTier === 'low' ? 1 : window.devicePixelRatio);
+  }, [performanceTier]);
   
   return (
     <div style={{ 
@@ -140,32 +218,56 @@ function Scene() {
       
       {/* Text overlay */}
       <div className="text-overlay">
-        <h1 className="headline">Imagine. Build. Inspire.</h1>
+        <h1 className="headline">
+          <span className="headline-word">Imagine.</span>
+          <span className="headline-word">Build.</span>
+          <span className="headline-word">Inspire.</span>
+        </h1>
         <p className="subheadline">
-          I work at the intersection of human creativity and<br />
+          I work at the intersection of human creativity and
           emerging technology to redefine experiences.
         </p>
       </div>
       
       <div className="canvas-container">
-        <Canvas>
+        <Canvas
+          camera={isMobile ? 
+            { position: [0, 0, 15], fov: 35 } : 
+            { position: [0, 0, 9], fov: 45 }
+          }
+          style={{ width: '100%', height: '100%' }}
+          frameloop={performanceTier === 'low' ? 'demand' : 'always'} // Only render when needed for low-end devices
+          dpr={dpr} // Use the state value instead of directly accessing window
+        >
           <Suspense fallback={null}>
-            <PerspectiveCamera makeDefault position={[0, 0, 9]} fov={45} />
-            <OrbitControls enableZoom={false} enablePan={false} />
-            
-            {/* Enhanced lighting for better contrast */}
-            <ambientLight intensity={0.4} />
-            <directionalLight position={[10, 10, 5]} intensity={1.2} />
-            <pointLight position={[-5, 5, -5]} intensity={0.8} />
-            <spotLight
-              position={[5, 5, 5]}
-              angle={0.3}
-              penumbra={1}
-              intensity={0.8}
-              castShadow
+            <PerspectiveCamera 
+              makeDefault 
+              position={isMobile ? [0, 0, 15] : [0, 0, 9]} 
+              fov={isMobile ? 35 : 45} 
+            />
+            <OrbitControls 
+              enableZoom={false} 
+              enablePan={false}
+              enableDamping={performanceTier !== 'low'} // Disable damping for low-end devices
             />
             
-            <SceneContent />
+            {/* Reduce number of lights for low-end devices */}
+            <ambientLight intensity={0.4} />
+            {performanceTier !== 'low' && (
+              <>
+                <directionalLight position={[10, 10, 5]} intensity={1.2} />
+                <pointLight position={[-5, 5, -5]} intensity={0.8} />
+                <spotLight
+                  position={[5, 5, 5]}
+                  angle={0.3}
+                  penumbra={1}
+                  intensity={0.8}
+                  castShadow
+                />
+              </>
+            )}
+            
+            <SceneContent isMobile={isMobile} performanceTier={performanceTier} />
           </Suspense>
         </Canvas>
       </div>
@@ -200,6 +302,7 @@ function Scene() {
           pointer-events: none;
           z-index: 10;
           animation: fadeIn 1.5s ease-out forwards;
+          padding: 1rem;
         }
         
         .headline {
@@ -209,8 +312,17 @@ function Scene() {
           margin: 0 0 1rem 0;
           color: #222;
           text-align: center;
-          line-height: 1.1;
+          line-height: 1.2;
           text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 0.5rem;
+        }
+
+        .headline-word {
+          display: inline-block;
         }
         
         .subheadline {
@@ -221,6 +333,7 @@ function Scene() {
           color: #333;
           text-align: center;
           line-height: 1.6;
+          max-width: 90%;
         }
         
         @keyframes fadeIn {
@@ -230,11 +343,29 @@ function Scene() {
         
         @media (max-width: 768px) {
           .headline {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
+            flex-direction: column;
+            gap: 0.2rem;
+            line-height: 1.1;
+          }
+          
+          .subheadline {
+            font-size: 1.2rem;
+            line-height: 1.4;
+            br {
+              display: none;
+            }
+          }
+        }
+
+        @media (max-width: 480px) {
+          .headline {
+            font-size: 2.4rem;
           }
           
           .subheadline {
             font-size: 1.1rem;
+            padding: 0 1rem;
           }
         }
         
@@ -256,18 +387,16 @@ function Scene() {
 }
 
 // This component contains all the 3D content that goes inside the Canvas
-function SceneContent() {
-  // Use a simple React state for opacity animation
+function SceneContent({ isMobile, performanceTier }: { 
+  isMobile: boolean,
+  performanceTier: PerformanceTier 
+}) {
   const [opacity, setOpacity] = useState(0);
   
-  // Use useEffect to animate the opacity with a smoother transition
   useEffect(() => {
-    // Small delay before starting animation
     const startTimer = setTimeout(() => {
-      // Start with a very low opacity
       setOpacity(0.01);
       
-      // Then gradually increase it with multiple steps
       const fadeInterval = setInterval(() => {
         setOpacity(prev => {
           const newOpacity = prev + 0.05;
@@ -277,7 +406,7 @@ function SceneContent() {
           }
           return newOpacity;
         });
-      }, 50); // Update every 50ms for a smoother transition
+      }, 50);
       
       return () => {
         clearInterval(fadeInterval);
@@ -288,21 +417,35 @@ function SceneContent() {
   }, []);
 
   return (
-    <group>
-      {/* Apply the same transition to all materials in the scene */}
-      <CellStructure opacity={opacity} />
-    </group>
+    <>
+      <group>
+        <CellStructure 
+          opacity={opacity} 
+          isMobile={isMobile} 
+          performanceTier={performanceTier}
+        />
+        <AbsorptionEffect />
+      </group>
+    </>
   );
 }
 
 // Cell structure component - all hooks are inside Canvas now
-function CellStructure({ opacity }: { opacity: number }) {
+function CellStructure({ opacity, isMobile, performanceTier }: { 
+  opacity: number, 
+  isMobile: boolean,
+  performanceTier: PerformanceTier
+}) {
   const groupRef = useRef<THREE.Group>(null);
   
   // Generate cell structure spheres inside the component
   const cellSpheres = useMemo(() => {
-    const count = 400; // Reduced slightly for larger spheres
-    const radius = 2.2; // Increased main sphere radius
+    // Further reduce count for low-end devices
+    const count = performanceTier === 'low' ? 150 : 
+                 performanceTier === 'medium' ? 250 : 
+                 isMobile ? 300 : 400;
+                 
+    const radius = isMobile ? 1.8 : 2.2;
     const positions: { position: [number, number, number], radius: number }[] = [];
     
     // Create a dense sphere of spheres on the surface
@@ -316,11 +459,13 @@ function CellStructure({ opacity }: { opacity: number }) {
       const y = Math.sin(theta) * Math.sin(phi);
       const z = Math.cos(phi);
       
-      // Larger spheres with more size variation like in the brief
-      const sphereRadius = (0.12 + Math.random() * 0.15) * radius;
+      // Use different sphere sizes based on device
+      const sphereRadius = isMobile ? 
+        (0.1 + Math.random() * 0.12) * radius :
+        (0.12 + Math.random() * 0.15) * radius;
       
       // Minimal jitter to maintain surface integrity
-      const jitter = 0.02;
+      const jitter = isMobile ? 0.015 : 0.02; // Reduced jitter for mobile
       const position: [number, number, number] = [
         x * radius * (1 - jitter + Math.random() * jitter * 2),
         y * radius * (1 - jitter + Math.random() * jitter * 2),
@@ -331,19 +476,20 @@ function CellStructure({ opacity }: { opacity: number }) {
     }
     
     // Add a layer just below the surface for depth
-    const subSurfaceCount = 150;
+    const subSurfaceCount = isMobile ? 100 : 150;
     for (let i = 0; i < subSurfaceCount; i++) {
       const phi = Math.acos(1 - 2 * (i / subSurfaceCount));
       const theta = Math.PI * 2 * i * (1 + Math.sqrt(5)) / 2;
       
       // Calculate position slightly below surface
-      const surfaceDepth = 0.85; // Position at 85% of radius
+      const surfaceDepth = 0.85;
       const x = surfaceDepth * Math.cos(theta) * Math.sin(phi);
       const y = surfaceDepth * Math.sin(theta) * Math.sin(phi);
       const z = surfaceDepth * Math.cos(phi);
       
-      // Larger spheres for subsurface too
-      const sphereRadius = (0.12 + Math.random() * 0.15) * radius;
+      const sphereRadius = isMobile ?
+        (0.1 + Math.random() * 0.12) * radius :
+        (0.12 + Math.random() * 0.15) * radius;
       
       positions.push({ 
         position: [x * radius, y * radius, z * radius], 
@@ -352,12 +498,15 @@ function CellStructure({ opacity }: { opacity: number }) {
     }
     
     return positions;
-  }, []);
+  }, [isMobile, performanceTier]);
   
   // Generate satellite positions distributed across the page
   const satellitePositions = useMemo(() => {
+    // Don't calculate positions for mobile devices
+    if (isMobile) return [];
+    
     const positions: [number, number, number][] = [];
-    const count = 225;
+    const count = 225; // Full count for desktop only
     
     // Fixed z-position to match the main sphere's z-axis
     const fixedZ = 0;
@@ -403,13 +552,20 @@ function CellStructure({ opacity }: { opacity: number }) {
     }
     
     return positions;
-  }, []);
+  }, [isMobile]);
   
   useFrame((state) => {
     if (groupRef.current) {
-      // Very slow rotation of the central structure only
-      groupRef.current.rotation.y = state.clock.elapsedTime * 0.05;
-      groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.03) * 0.1;
+      if (performanceTier === 'low' && state.clock.elapsedTime % 3 !== 0) return;
+      
+      const rotationSpeed = performanceTier === 'low' ? 0.03 :
+                          performanceTier === 'medium' ? 0.04 : 0.05;
+                          
+      groupRef.current.rotation.y = state.clock.elapsedTime * rotationSpeed;
+      
+      if (performanceTier !== 'low') {
+        groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.03) * 0.1;
+      }
     }
   });
 
@@ -424,21 +580,22 @@ function CellStructure({ opacity }: { opacity: number }) {
             radius={sphere.radius}
             colorIndex={index % COLORS.spheres.length}
             opacity={opacity}
+            isMobile={isMobile}
+            performanceTier={performanceTier}
           />
         ))}
-        
-        {/* Glow emissions removed */}
         
         {/* Add absorption effect */}
         <AbsorptionEffect />
       </group>
       
-      {/* Render satellites outside the rotating group */}
-      {satellitePositions.map((pos, index) => (
+      {/* Only render satellites on non-mobile devices */}
+      {!isMobile && satellitePositions.map((pos, index) => (
         <Satellite 
           key={`satellite-${index}`} 
           position={pos} 
           opacity={opacity}
+          isMobile={false}
         />
       ))}
     </>
@@ -446,11 +603,13 @@ function CellStructure({ opacity }: { opacity: number }) {
 }
 
 // Cell sphere component
-function CellSphere({ position, radius, colorIndex, opacity }: { 
+function CellSphere({ position, radius, colorIndex, opacity, isMobile, performanceTier }: { 
   position: [number, number, number], 
   radius: number,
   colorIndex: number,
-  opacity: number
+  opacity: number,
+  isMobile: boolean,
+  performanceTier: PerformanceTier
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<any>(null);
@@ -459,28 +618,32 @@ function CellSphere({ position, radius, colorIndex, opacity }: {
   // Reduced animation for better performance with more spheres
   const animParams = useMemo(() => ({
     frequency: 0.15 + Math.random() * 0.1,
-    amplitude: 0.02 + Math.random() * 0.01, // Reduced amplitude
+    amplitude: isMobile ? 0.015 : 0.02, // Reduced amplitude for mobile
     phase: Math.random() * Math.PI * 2
-  }), []);
+  }), [isMobile]);
 
   useFrame((state) => {
     if (meshRef.current && materialRef.current) {
       const time = state.clock.elapsedTime;
       
+      // Skip frames based on performance tier
+      if ((performanceTier === 'low' && time % 4 !== 0) ||
+          (performanceTier === 'medium' && time % 2 !== 0)) return;
+      
       // Subtle pulsing
       const scale = 1 + Math.sin(time * animParams.frequency + animParams.phase) * animParams.amplitude;
       meshRef.current.scale.set(scale, scale, scale);
       
-      // Reduced position shift for better performance
-      meshRef.current.position.x = initialPosition.current.x + Math.sin(time * 0.2 + animParams.phase) * 0.01;
-      meshRef.current.position.y = initialPosition.current.y + Math.sin(time * 0.25 + animParams.phase) * 0.01;
-      meshRef.current.position.z = initialPosition.current.z + Math.sin(time * 0.3 + animParams.phase) * 0.01;
+      // Reduced position shift and skip for mobile
+      if (!isMobile) {
+        meshRef.current.position.x = initialPosition.current.x + Math.sin(time * 0.2 + animParams.phase) * 0.01;
+        meshRef.current.position.y = initialPosition.current.y + Math.sin(time * 0.25 + animParams.phase) * 0.01;
+        meshRef.current.position.z = initialPosition.current.z + Math.sin(time * 0.3 + animParams.phase) * 0.01;
+      }
       
       // Update shader uniforms
       materialRef.current.time = time;
       materialRef.current.scale = scale;
-      
-      // Apply the opacity
       materialRef.current.opacity = opacity;
     }
   });
@@ -489,7 +652,15 @@ function CellSphere({ position, radius, colorIndex, opacity }: {
 
   return (
     <mesh ref={meshRef} position={position}>
-      <sphereGeometry args={[radius, 32, 32]} />
+      <sphereGeometry args={[
+        radius,
+        performanceTier === 'low' ? 8 : 
+        performanceTier === 'medium' ? 12 : 
+        isMobile ? 16 : 32,
+        performanceTier === 'low' ? 8 : 
+        performanceTier === 'medium' ? 12 : 
+        isMobile ? 16 : 32
+      ]} />
       {/* @ts-ignore */}
       <gooeyMaterial 
         ref={materialRef}
@@ -498,57 +669,50 @@ function CellSphere({ position, radius, colorIndex, opacity }: {
         scale={1.0}
         transparent={true}
         opacity={opacity}
+        isMobile={isMobile}
       />
     </mesh>
   );
 }
 
 // Satellite component
-function Satellite({ position, opacity }: { 
+function Satellite({ position, opacity, isMobile }: { 
   position: [number, number, number],
-  opacity: number
+  opacity: number,
+  isMobile: boolean
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<any>(null);
   
-  // Satellite size variations
-  const SATELLITE_SIZES = [0.4, 0.3, 0.25, 0.2, 0.15, 0.1];
+  // Satellite size variations - slightly smaller for mobile
+  const SATELLITE_SIZES = isMobile ? 
+    [0.35, 0.25, 0.2, 0.15, 0.12, 0.08] :
+    [0.4, 0.3, 0.25, 0.2, 0.15, 0.1];
   
-  // Determine if this satellite should have a decaying orbit
-  // Only about 8% of satellites will have decaying orbits
-  const hasDecayingOrbit = useMemo(() => Math.random() < 0.08, []);
+  // Reduce number of decaying orbits for mobile
+  const hasDecayingOrbit = useMemo(() => Math.random() < (isMobile ? 0.05 : 0.08), []);
   
-  // Update the orbit parameters to ensure satellites are on different z-planes
+  // Update the orbit parameters for mobile optimization
   const orbitParams = useMemo(() => {
-    // Initial distance from center
     const initialDistance = Math.sqrt(position[0] * position[0] + position[1] * position[1]);
-    
-    // Assign a unique z-plane to each satellite
-    // This creates a unique orbital plane for each satellite
     const zPlaneOffset = (Math.abs(position[0] * 100 + position[1] * 50) % 20) - 10;
     
     return {
-      // Initial distance from center
       initialDistance,
-      // How quickly the orbit decays (lower = slower) - only for decaying orbits
       decayRate: 0.05 + Math.random() * 0.1,
-      // Orbit speed (radians per second) - varied for all satellites
-      speed: 0.05 + Math.random() * 0.15,
-      // Starting angle in the orbit
+      // Slower speeds for mobile
+      speed: (0.05 + Math.random() * 0.15) * (isMobile ? 0.8 : 1),
       startAngle: Math.atan2(position[1], position[0]),
-      // When the decay starts (random delay) - only for decaying orbits
       decayStartTime: 5 + Math.random() * 30,
-      // Orbit eccentricity (0 = perfect circle, higher = more elliptical)
-      eccentricity: Math.random() * 0.2,
-      // Orbit inclination (tilt)
-      inclination: Math.random() * Math.PI * 0.1,
-      // Orbit direction (clockwise or counterclockwise)
+      // Reduced eccentricity for mobile
+      eccentricity: Math.random() * (isMobile ? 0.15 : 0.2),
+      // Reduced inclination for mobile
+      inclination: Math.random() * Math.PI * (isMobile ? 0.08 : 0.1),
       direction: Math.random() > 0.5 ? 1 : -1,
-      // Z-plane offset to prevent intersections
-      zPlaneOffset: zPlaneOffset * 0.3,
-      // Orbital plane tilt (rotates the entire orbit)
-      planeTiltX: Math.random() * 0.3,
-      planeTiltY: Math.random() * 0.3
+      zPlaneOffset: zPlaneOffset * (isMobile ? 0.25 : 0.3),
+      // Reduced tilt for mobile
+      planeTiltX: Math.random() * (isMobile ? 0.25 : 0.3),
+      planeTiltY: Math.random() * (isMobile ? 0.25 : 0.3)
     };
   }, [position]);
   
@@ -681,18 +845,19 @@ function Satellite({ position, opacity }: {
   });
 
   return (
-      <mesh ref={meshRef} position={position}>
-      <sphereGeometry args={[size, 32, 32]} />
-        {/* @ts-ignore */}
-        <gooeyMaterial 
-          ref={materialRef}
-          color={color}
-          time={0}
-          scale={1.0}
-          transparent={true}
-          opacity={opacity}
-        />
-      </mesh>
+    <mesh ref={meshRef} position={position}>
+      <sphereGeometry args={[size, isMobile ? 16 : 32, isMobile ? 16 : 32]} />
+      {/* @ts-ignore */}
+      <gooeyMaterial 
+        ref={materialRef}
+        color={color}
+        time={0}
+        scale={1.0}
+        transparent={true}
+        opacity={opacity}
+        isMobile={isMobile}
+      />
+    </mesh>
   );
 }
 
