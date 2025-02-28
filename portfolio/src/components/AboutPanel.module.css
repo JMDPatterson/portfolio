@@ -123,17 +123,66 @@
 }
 
 @media (max-width: 768px) {
+  .overlay {
+    align-items: flex-start;
+    overflow-y: auto;
+    padding: 1rem 0;
+  }
+
   .panel {
-    padding: 2rem;
+    padding: 2rem 1.5rem;
     width: 95%;
+    margin: auto;
+    max-height: none;
+    min-height: auto;
   }
 
   .content {
     grid-template-columns: 1fr;
     gap: 2rem;
+    margin-top: 1rem;
+    min-height: auto;
+  }
+
+  .bioColumn h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .bioColumn p {
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
   }
 
   .imageContainer {
-    height: 400px;
+    height: 300px;
+    max-height: 50vh;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .headshot {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .closeButton {
+    top: 1rem;
+    right: 1rem;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .panel {
+    padding: 1.5rem 1rem;
+    width: 100%;
+    border-radius: 12px;
+  }
+
+  .imageContainer {
+    height: 250px;
   }
 } 
