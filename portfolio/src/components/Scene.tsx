@@ -250,8 +250,8 @@ export default function Scene() {
       <div className="canvas-container">
         <Canvas
           camera={isMobile ? 
-            { position: [0, 0, 15], fov: 35 } : 
-            { position: [0, 0, 9], fov: 45 }
+            { position: [0, -2, 15], fov: 35 } : 
+            { position: [0, -2, 9], fov: 45 }
           }
           style={{ width: '100%', height: '100%' }}
           frameloop="always"
@@ -261,7 +261,7 @@ export default function Scene() {
             <Suspense fallback={null}>
               <PerspectiveCamera 
                 makeDefault 
-                position={isMobile ? [0, 0, 15] : [0, 0, 9]} 
+                position={isMobile ? [0, -2, 15] : [0, -2, 9]} 
                 fov={isMobile ? 35 : 45} 
               />
               <OrbitControls 
@@ -318,12 +318,13 @@ export default function Scene() {
           z-index: 10;
           animation: fadeIn 1.5s ease-out forwards;
           padding: 1rem;
+          transform: translateY(5vh);
         }
         
         .headline {
           font-size: 3.5rem;
           font-weight: 700;
-          letter-spacing: 0.02em;
+          letter-spacing: -0.01em;
           margin: 0 0 1rem 0;
           color: #222;
           text-align: center;
@@ -333,7 +334,8 @@ export default function Scene() {
           flex-direction: row;
           flex-wrap: wrap;
           justify-content: center;
-          gap: 0.5rem;
+          gap: 0.4rem;
+          transform: translateY(-1vh);
         }
 
         .headline-word {
@@ -343,30 +345,39 @@ export default function Scene() {
         .subheadline {
           font-size: 1.4rem;
           font-weight: 500;
-          letter-spacing: 0.01em;
+          letter-spacing: -0.005em;
           margin: 0;
           color: #333;
           text-align: center;
-          line-height: 1.6;
-          max-width: 90%;
+          line-height: 1.5;
+          max-width: 80%;
         }
         
         @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
+          from { opacity: 0; transform: translateY(calc(5vh + 10px)); }
+          to { opacity: 1; transform: translateY(5vh); }
         }
         
         @media (max-width: 768px) {
+          .text-overlay {
+            transform: translateY(8vh);
+          }
+          
           .headline {
             font-size: 2.8rem;
             flex-direction: column;
-            gap: 0.2rem;
-            line-height: 1.1;
+            gap: 0.15rem;
+            line-height: 1.05;
+            margin: 0 0 1.2rem 0;
+            transform: none;
+            letter-spacing: -0.01em;
           }
           
           .subheadline {
             font-size: 1.2rem;
-            line-height: 1.4;
+            line-height: 1.35;
+            max-width: 90%;
+            letter-spacing: -0.005em;
             br {
               display: none;
             }
@@ -374,13 +385,23 @@ export default function Scene() {
         }
 
         @media (max-width: 480px) {
+          .text-overlay {
+            transform: translateY(6vh);
+          }
+          
           .headline {
             font-size: 2.4rem;
+            margin: 0 0 1rem 0;
+            transform: none;
+            letter-spacing: -0.01em;
+            gap: 0.12rem;
           }
           
           .subheadline {
             font-size: 1.1rem;
             padding: 0 1rem;
+            letter-spacing: -0.005em;
+            line-height: 1.3;
           }
         }
         
@@ -389,6 +410,8 @@ export default function Scene() {
           height: 100%;
           opacity: 0;
           animation: canvasFadeIn 1.2s ease-in forwards;
+          position: relative;
+          transform: translateY(5vh);
         }
         
         @keyframes canvasFadeIn {

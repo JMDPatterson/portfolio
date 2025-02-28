@@ -32,17 +32,17 @@ export default function Home() {
           <h1 className={styles.title}>James Patterson</h1>
           <nav className={styles.navigation}>
             <div className={styles.desktopNav}>
-              <a href="#" onClick={handleAboutClick}>About Me</a>
-              <Link href="/contact">Contact</Link>
+              <a href="#" onClick={handleAboutClick} className={styles.navLink}>About Me</a>
+              <Link href="/contact" className={styles.navLink}>Contact</Link>
             </div>
             <button 
               className={`${styles.hamburger} ${isMobileMenuOpen ? styles.active : ''}`}
               onClick={toggleMobileMenu}
               aria-label="Toggle menu"
             >
-              <span></span>
-              <span></span>
-              <span></span>
+              <div></div>
+              <div></div>
+              <div></div>
             </button>
           </nav>
         </header>
@@ -57,8 +57,8 @@ export default function Home() {
             <span className={styles.closeIcon}>×</span>
           </button>
           <nav className={styles.mobileNavContent}>
-            <a href="#" onClick={handleAboutClick}>About Me</a>
-            <Link href="/contact">Contact</Link>
+            <a href="#" onClick={handleAboutClick} className={styles.mobileNavLink}>About Me</a>
+            <Link href="/contact" className={styles.mobileNavLink}>Contact</Link>
           </nav>
         </div>
       </div>
