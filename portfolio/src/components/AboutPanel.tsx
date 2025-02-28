@@ -52,20 +52,13 @@ export default function AboutPanel({ isOpen, onClose }: AboutPanelProps) {
               <div className={styles.bioColumn}>
                 <h2>About Me</h2>
                 <p>
-                  I'm a software engineer with a passion for creating elegant solutions 
-                  to complex problems. My expertise spans full-stack development, with 
-                  a particular focus on building scalable web applications and 
-                  interactive experiences.
+                I'm a creative technologist passionate about leveraging emerging technologies to craft elegant and meaningful human experiences.
                 </p>
                 <p>
-                  With a background in computer science and years of industry experience, 
-                  I bring both technical depth and creative problem-solving to every project. 
-                  I'm particularly interested in the intersection of performance optimization 
-                  and user experience.
+                With a background in design engineering and software development, I leverage creative problem-solving with technical depth to explore the transformative potential of generative AI and immersive technologies to drive innovation, fostering new ways to connect, engage, and inspire.
                 </p>
                 <p className={styles.imageCaption}>
-                  Currently working on innovative web solutions and exploring new technologies 
-                  in the realm of interactive 3D graphics and real-time applications.
+                Currently working at PwC UK, I explore the impact of emerging technologies on businesses and society, and guide clients through shaping the future of digital experiences.
                 </p>
               </div>
               
