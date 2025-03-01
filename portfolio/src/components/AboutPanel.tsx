@@ -12,7 +12,6 @@ interface AboutPanelProps {
 
 export default function AboutPanel({ isOpen, onClose }: AboutPanelProps) {
   const [imageError, setImageError] = useState(false)
-  const basePath = process.env.NODE_ENV === 'production' ? '/portfolio' : '';
 
   // Prevent body scroll when panel is open
   useEffect(() => {
@@ -66,7 +65,7 @@ export default function AboutPanel({ isOpen, onClose }: AboutPanelProps) {
                 <div className={styles.imageContainer}>
                   {!imageError ? (
                     <Image
-                      src={`${basePath}/portrait.JPG`}
+                      src="/portrait.JPG"
                       alt="Profile"
                       width={1200}
                       height={1600}
