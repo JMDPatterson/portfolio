@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import styles from './AboutPanel.module.css'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import portraitImage from '@/assets/portrait.jpg'
+import portraitImage from '../assets/portrait.jpg'
 
 interface AboutPanelProps {
   isOpen: boolean
