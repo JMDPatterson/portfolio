@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import styles from './AboutPanel.module.css'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import portraitImage from '../assets/portrait.jpg'
 
 interface AboutPanelProps {
   isOpen: boolean
@@ -13,6 +12,7 @@ interface AboutPanelProps {
 
 export default function AboutPanel({ isOpen, onClose }: AboutPanelProps) {
   const [imageError, setImageError] = useState(false)
+  const basePath = process.env.NODE_ENV === 'production' ? '/portfolio' : '';
 
   // Prevent body scroll when panel is open
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function AboutPanel({ isOpen, onClose }: AboutPanelProps) {
                 <div className={styles.imageContainer}>
                   {!imageError ? (
                     <Image
-                      src={portraitImage}
+                      src={`${basePath}/portrait.JPG`}
                       alt="Profile"
                       width={1200}
                       height={1600}
