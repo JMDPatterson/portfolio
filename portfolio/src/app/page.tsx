@@ -33,7 +33,7 @@ export default function Home() {
           <nav className={styles.navigation}>
             <div className={styles.desktopNav}>
               <a href="#" onClick={handleAboutClick} className={styles.navLink}>About Me</a>
-              <Link href="/contact" className={styles.navLink}>Contact</Link>
+              <a href="https://form.typeform.com/to/z6VvFjSJ" target="_blank" rel="noopener noreferrer" className={styles.navLink}>Contact</a>
             </div>
             <button 
               className={`${styles.hamburger} ${isMobileMenuOpen ? styles.active : ''}`}
@@ -58,7 +58,7 @@ export default function Home() {
           </button>
           <nav className={styles.mobileNavContent}>
             <a href="#" onClick={handleAboutClick} className={styles.mobileNavLink}>About Me</a>
-            <Link href="/contact" className={styles.mobileNavLink}>Contact</Link>
+            <a href="https://form.typeform.com/to/z6VvFjSJ" target="_blank" rel="noopener noreferrer" className={styles.mobileNavLink}>Contact</a>
           </nav>
         </div>
       </div>
