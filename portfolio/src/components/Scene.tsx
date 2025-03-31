@@ -221,13 +221,13 @@ export default function Scene() {
   }
 
   return (
-    <div style={{ 
-      width: '100vw', 
-      height: '100vh', 
-      position: 'fixed', 
-      top: 0, 
-      left: 0, 
-      zIndex: -1,
+    <div style={{
+      width: '100%',
+      height: '100vh',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      zIndex: 1,
       background: `linear-gradient(${gradientAngle}deg, #FDFCFB 0%, #F8F6F6 35%, #F2EDED 65%, #FAF6F6 100%)`,
       transition: 'background 1s ease'
     }}>

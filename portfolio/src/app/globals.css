@@ -7,10 +7,6 @@
 
 html,
 body {
-  height: 100vh;
-  overflow: hidden;
-  position: fixed;
-  width: 100vw;
   font-family: var(--font-sans);
 }
 
