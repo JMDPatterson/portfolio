@@ -14,7 +14,7 @@ const ContactSection: React.FC = () => {
         <div className={styles.content}>
           <div className={styles.mainColumn}>
             <p className={styles.description}>
-              I'm always interested in connecting with fellow developers and tech enthusiasts. Feel free to reach out if you'd like to discuss technology, share ideas, or explore the ever-evolving world of web development.
+              Technology moves fast, and I love exchanging ideas with fellow innovators. Whether you want to share ideas, or exchange perspectives on emerging technology, feel free to reach out!
             </p>
             
             <a 
@@ -31,7 +31,7 @@ const ContactSection: React.FC = () => {
           <div className={styles.socialColumn}>
             <div className={styles.socialLinks}>
               <a 
-                href="https://github.com/JMDPatterson" 
+                href="https://github.com/JMDPatterson"
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className={styles.socialLink}
