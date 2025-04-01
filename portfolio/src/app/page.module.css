@@ -50,7 +50,7 @@
   top: 0;
   left: 0;
   width: 100vw;
-  padding: 1.5rem;
+  padding: 1.5rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -78,12 +78,13 @@
 
 .navigation {
   display: flex;
-  gap: 2rem;
+  gap: 2.5rem;
+  padding-right: 1rem;
 }
 
 .desktopNav {
   display: flex;
-  gap: 2rem;
+  gap: 2.5rem;
 }
 
 .navLink {
@@ -227,6 +228,10 @@
 
   .header {
     padding: 1rem 1.5rem;
+  }
+
+  .navigation {
+    padding-right: 0;
   }
 
   .desktopNav {

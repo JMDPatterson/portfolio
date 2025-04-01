@@ -1,29 +1,35 @@
 'use client'
 
 import Scene from '@/components/Scene'
-import AboutPanel from '@/components/AboutPanel'
 import Projects from '@/components/Projects'
+import AboutSection from '@/components/AboutSection'
+import ContactSection from '@/components/ContactSection'
 import styles from './page.module.css'
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
 
 export default function Home() {
-  const [isAboutOpen, setIsAboutOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-
-  const handleAboutClick = useCallback((e: React.MouseEvent) => {
-    e.preventDefault()
-    setIsAboutOpen(true)
-    setIsMobileMenuOpen(false)
-  }, [])
-
-  const handleClose = useCallback(() => {
-    setIsAboutOpen(false)
-  }, [])
 
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(prev => !prev)
   }, [])
+
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault()
+    const element = document.getElementById(id)
+    if (element) {
+      const headerOffset = 80
+      const elementPosition = element.getBoundingClientRect().top
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      })
+    }
+    setIsMobileMenuOpen(false)
+  }
 
   return (
     <main className={styles.main}>
@@ -35,8 +41,9 @@ export default function Home() {
             <h1 className={styles.title}>James Patterson</h1>
             <nav className={styles.navigation}>
               <div className={styles.desktopNav}>
-                <a href="#" onClick={handleAboutClick} className={styles.navLink}>About Me</a>
-                <a href="https://form.typeform.com/to/z6VvFjSJ" target="_blank" rel="noopener noreferrer" className={styles.navLink}>Contact</a>
+                <a href="#about" onClick={(e) => handleScroll(e, 'about')} className={styles.navLink}>About Me</a>
+                <a href="#projects" onClick={(e) => handleScroll(e, 'projects')} className={styles.navLink}>Projects</a>
+                <a href="#contact" onClick={(e) => handleScroll(e, 'contact')} className={styles.navLink}>Contact</a>
               </div>
               <button 
                 className={`${styles.hamburger} ${isMobileMenuOpen ? styles.active : ''}`}
@@ -60,20 +67,22 @@ export default function Home() {
               <span className={styles.closeIcon}>×</span>
             </button>
             <nav className={styles.mobileNavContent}>
-              <a href="#" onClick={handleAboutClick} className={styles.mobileNavLink}>About Me</a>
-              <a href="https://form.typeform.com/to/z6VvFjSJ" target="_blank" rel="noopener noreferrer" className={styles.mobileNavLink}>Contact</a>
+              <a href="#about" onClick={(e) => handleScroll(e, 'about')} className={styles.mobileNavLink}>About Me</a>
+              <a href="#projects" onClick={(e) => handleScroll(e, 'projects')} className={styles.mobileNavLink}>Projects</a>
+              <a href="#contact" onClick={(e) => handleScroll(e, 'contact')} className={styles.mobileNavLink}>Contact</a>
             </nav>
           </div>
         </div>
       </section>
 
+      {/* About Section */}
+      <AboutSection />
+
       {/* Projects Section */}
       <Projects />
 
-      <AboutPanel 
-        isOpen={isAboutOpen}
-        onClose={handleClose}
-      />
+      {/* Contact Section */}
+      <ContactSection />
     </main>
   )
 }

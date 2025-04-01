@@ -57,7 +57,7 @@ export default function AboutPanel({ isOpen, onClose }: AboutPanelProps) {
                 With a background in design engineering and software development, I leverage creative problem-solving with technical depth to explore the transformative potential of generative AI and immersive technologies to drive innovation, fostering new ways to connect, engage, and inspire.
                 </p>
                 <p className={styles.imageCaption}>
-                Currently working at PwC UK, I explore the impact of emerging technologies on businesses and society, and guide clients through shaping the future of digital experiences.
+                Working at PwC UK, I explore the impact of emerging technologies on businesses and society, and guide clients through shaping the future of digital experiences.
                 </p>
               </div>
               

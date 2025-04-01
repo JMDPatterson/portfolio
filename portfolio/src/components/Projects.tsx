@@ -6,7 +6,7 @@ const Projects: React.FC = () => {
   const projects = [
     {
       title: "Free Your Mind",
-      description: "Interactive ASCII art web app, inspired by the Matrix film franchise",
+      description: "Interactive ASCII art web app, inspired by the Matrix film series",
       tags: ["Vercel", "v0"],
       link: "https://free-your-mind.vercel.app",
       mediaUrl: "/neo-demo.mp4",
@@ -24,11 +24,13 @@ const Projects: React.FC = () => {
   ];
 
   return (
-    <section className={styles.projectsSection}>
+    <section id="projects" className={styles.projectsSection}>
       <div className={styles.container}>
-        <h2 className={styles.title}>Projects</h2>
+        <div className={styles.titleWrapper}>
+          <h2 className={`${styles.title} title`}>Projects</h2>
+        </div>
         <p className={styles.description}>
-          A collection of my recent work showcasing my skills and experience in web development.
+          Some of the recent projects I’ve built, explored, and learned from.
         </p>
         <div className={styles.grid}>
           {projects.map((project, index) => (

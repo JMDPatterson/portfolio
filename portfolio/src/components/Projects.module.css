@@ -10,14 +10,32 @@
   margin: 0 auto;
 }
 
+.titleWrapper {
+  margin-bottom: 2rem;
+  position: relative;
+  display: inline-block;
+}
+
 .title {
   font-size: 2.5rem;
   font-weight: 700;
-  margin-bottom: 1rem;
   background: linear-gradient(135deg, #ff6b6b 0%, #a36bff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  position: relative;
+  display: inline-block;
+}
+
+.titleWrapper::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #ff6b6b, #a36bff);
+  border-radius: 2px;
 }
 
 .description {
