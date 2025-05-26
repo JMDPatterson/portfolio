@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button"
 import { Facebook, Twitter, Linkedin } from "lucide-react"
 import Image from "next/image"
 import { useEffect } from "react"
-import { GradientButton } from "@/components/gradient-button"
+import { GradientButton } from "./components/gradient-button"
 
-export default function Page() {
+export default function Portfolio() {
   useEffect(() => {
     // Smooth scrolling polyfill for older browsers
     const smoothScrollTo = (element: Element) => {
