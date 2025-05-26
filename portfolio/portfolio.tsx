@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Facebook, Twitter, Linkedin } from "lucide-react"
+import { Facebook, Twitter, Linkedin, Github } from "lucide-react"
 import Image from "next/image"
 import { useEffect } from "react"
 import { GradientButton } from "./components/gradient-button"
@@ -191,32 +191,31 @@ export default function Portfolio() {
               </p>
             </div>
             <div className="flex justify-center lg:justify-start gap-4 mb-6 lg:mb-8">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-[#ffffff] hover:bg-[#1e1e1e] transition-all duration-300 hover:scale-110 w-12 h-12 touch-manipulation"
-              >
-                <Facebook className="w-5 h-5" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-[#ffffff] hover:bg-[#1e1e1e] transition-all duration-300 hover:scale-110 w-12 h-12 touch-manipulation"
-              >
-                <Twitter className="w-5 h-5" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-[#ffffff] hover:bg-[#1e1e1e] transition-all duration-300 hover:scale-110 w-12 h-12 touch-manipulation"
-              >
-                <Linkedin className="w-5 h-5" />
-              </Button>
+              <a href="https://github.com/JMDPatterson" target="_blank" rel="noopener noreferrer">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-[#ffffff] hover:bg-[#1e1e1e] hover:text-[#ffffff] transition-all duration-300 hover:scale-110 w-12 h-12 touch-manipulation"
+                >
+                  <Github className="w-5 h-5" />
+                </Button>
+              </a>
+              <a href="https://www.linkedin.com/in/jmdpatterson/" target="_blank" rel="noopener noreferrer">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-[#ffffff] hover:bg-[#1e1e1e] hover:text-[#ffffff] transition-all duration-300 hover:scale-110 w-12 h-12 touch-manipulation"
+                >
+                  <Linkedin className="w-5 h-5" />
+                </Button>
+              </a>
             </div>
             <div className="flex justify-center lg:justify-start">
-              <GradientButton size="lg" className="w-full sm:w-auto max-w-xs sm:max-w-none">
-                CONTACT ME
-              </GradientButton>
+              <a href="https://form.typeform.com/to/z6VvFjSJ" target="_blank" rel="noopener noreferrer">
+                <GradientButton size="lg" className="w-full sm:w-auto max-w-xs sm:max-w-none">
+                  CONTACT ME
+                </GradientButton>
+              </a>
             </div>
           </div>
           <div className="flex justify-center items-center order-1 lg:order-2">
