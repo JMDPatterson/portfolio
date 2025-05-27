@@ -123,8 +123,8 @@ export default function Portfolio() {
                         <Image
                           src="/free-your-mind-poster.png"
                           alt="Free Your Mind Poster"
-                          layout="fill"
-                          objectFit="cover"
+                          fill
+                          style={{ objectFit: 'cover' }}
                           className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
                             hoveredProject === item ? "opacity-0" : "opacity-100"
                           }`}
@@ -132,8 +132,8 @@ export default function Portfolio() {
                         <Image
                           src="/free-your-mind-demo.gif"
                           alt="Free Your Mind Demo GIF"
-                          layout="fill"
-                          objectFit="cover"
+                          fill
+                          style={{ objectFit: 'cover' }}
                           className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
                             hoveredProject === item ? "opacity-100" : "opacity-0"
                           }`}
