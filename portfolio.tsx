@@ -9,6 +9,7 @@ import { GradientButton } from "./components/gradient-button"
 
 export default function Portfolio() {
   const [isHovered, setIsHovered] = useState(false)
+  const [hoveredProject, setHoveredProject] = useState<number | null>(null)
 
   useEffect(() => {
     // Smooth scrolling polyfill for older browsers
@@ -112,18 +113,56 @@ export default function Portfolio() {
               <Card
                 key={item}
                 className="bg-[#1e1e1e] border-none transition-all duration-300 hover:scale-105 hover:bg-[#2a2a2a] touch-manipulation"
+                onMouseEnter={() => setHoveredProject(item)}
+                onMouseLeave={() => setHoveredProject(null)}
               >
                 <CardContent className="p-0">
-                  <div className="aspect-video bg-gradient-to-br from-orange-400 via-red-400 to-blue-500 rounded-t-lg"></div>
+                  <div className="aspect-video relative rounded-t-lg overflow-hidden">
+                    {item === 1 ? (
+                      <>
+                        <Image
+                          src="/free-your-mind-poster.png"
+                          alt="Free Your Mind Poster"
+                          layout="fill"
+                          objectFit="cover"
+                          className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
+                            hoveredProject === item ? "opacity-0" : "opacity-100"
+                          }`}
+                        />
+                        <Image
+                          src="/free-your-mind-demo.gif"
+                          alt="Free Your Mind Demo GIF"
+                          layout="fill"
+                          objectFit="cover"
+                          className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
+                            hoveredProject === item ? "opacity-100" : "opacity-0"
+                          }`}
+                        />
+                      </>
+                    ) : (
+                      <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-orange-400 via-red-400 to-blue-500 rounded-t-lg"></div>
+                    )}
+                  </div>
                   <div className="p-4 sm:p-6">
-                    <h3 className="text-lg sm:text-xl font-bold mb-3 text-[#ffffff]">Free Your Mind</h3>
+                    <h3 className="text-lg sm:text-xl font-bold mb-3 text-[#ffffff]">
+                      {item === 1 ? "Free Your Mind" : "Coming Soon"}
+                    </h3>
                     <p className="text-gray-300 mb-4 text-sm sm:text-base leading-relaxed">
-                      Give a brief overview of the successful project here. You may talk about the client brand, the
-                      main challenge you overcame or the award you got for it.
+                      {item === 1
+                        ? "Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII. Built with Vercel’s v0."
+                        : "Stay tuned for exciting new projects currently in the works! More details will be revealed soon."}
                     </p>
-                    <GradientButton size="sm" className="w-full sm:w-auto">
-                      READ MORE
-                    </GradientButton>
+                    {item === 1 ? (
+                      <a href="https://free-your-mind.vercel.app/" target="_blank" rel="noopener noreferrer">
+                        <GradientButton size="sm" className="w-full sm:w-auto">
+                          READ MORE
+                        </GradientButton>
+                      </a>
+                    ) : (
+                      <GradientButton size="sm" className="w-full sm:w-auto">
+                        COMING SOON
+                      </GradientButton>
+                    )}
                   </div>
                 </CardContent>
               </Card>
