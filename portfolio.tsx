@@ -4,10 +4,12 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Facebook, Twitter, Linkedin, Github } from "lucide-react"
 import Image from "next/image"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { GradientButton } from "./components/gradient-button"
 
 export default function Portfolio() {
+  const [isHovered, setIsHovered] = useState(false)
+
   useEffect(() => {
     // Smooth scrolling polyfill for older browsers
     const smoothScrollTo = (element: Element) => {
@@ -159,13 +161,29 @@ export default function Portfolio() {
             </div>
           </div>
           <div className="flex justify-center items-center order-1 lg:order-2">
-            <div className="w-64 h-72 sm:w-72 sm:h-80 md:w-80 md:h-96 lg:w-96 lg:h-[28rem] rounded-lg overflow-hidden transition-transform duration-700 hover:scale-105">
+            <div
+              className="relative w-64 h-72 sm:w-72 sm:h-80 md:w-80 md:h-96 lg:w-96 lg:h-[28rem] rounded-lg overflow-hidden transition-transform duration-700 hover:scale-105"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
               <Image
                 src="/portrait.jpg"
                 alt="James Patterson"
                 width={384}
                 height={448}
-                className="w-full h-full object-cover"
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                  isHovered ? "opacity-0" : "opacity-100"
+                }`}
+                loading="lazy"
+              />
+              <Image
+                src="/portrait-hover.jpg"
+                alt="James Patterson Hover"
+                width={384}
+                height={448}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                  isHovered ? "opacity-100" : "opacity-0"
+                }`}
                 loading="lazy"
               />
             </div>
