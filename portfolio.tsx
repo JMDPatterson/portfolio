@@ -4,12 +4,24 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Facebook, Twitter, Linkedin, Github } from "lucide-react"
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { GradientButton } from "./components/gradient-button"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
+} from "@/components/ui/carousel"
+import { cn } from "@/lib/utils"
 
 export default function Portfolio() {
   const [isHovered, setIsHovered] = useState(false)
   const [hoveredProject, setHoveredProject] = useState<number | null>(null)
+  const [api, setApi] = useState<CarouselApi>()
+  const [current, setCurrent] = useState(0)
+  const [count, setCount] = useState(0)
 
   useEffect(() => {
     // Smooth scrolling polyfill for older browsers
@@ -38,6 +50,20 @@ export default function Portfolio() {
       })
     }
   }, [])
+
+  // Carousel effect for slide tracking
+  useEffect(() => {
+    if (!api) {
+      return
+    }
+
+    setCount(api.scrollSnapList().length)
+    setCurrent(api.selectedScrollSnap() + 1)
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1)
+    })
+  }, [api])
 
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId)
@@ -138,71 +164,155 @@ export default function Portfolio() {
       {/* What I've Worked On */}
       <section
         id="work"
-        className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12 lg:py-16 bg-[#000000] text-[#ffffff] snap-start"
+        className="min-h-screen flex items-center justify-center py-8 sm:py-12 lg:py-16 bg-[#000000] text-[#ffffff] snap-start"
       >
-        <div className="max-w-7xl mx-auto w-full">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-8 sm:mb-12 lg:mb-16">
-            WHAT I'VE WORKED ON
+        <div className="max-w-7xl mx-auto w-full px-8 sm:px-12">
+          <h2 className="text-[8vw] sm:text-[10vw] lg:text-6xl font-bold text-left mb-8 sm:mb-12 lg:mb-16">
+            WHAT I'VE<br />WORKED ON
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
-            {[1, 2, 3].map((item) => (
-              <Card
-                key={item}
-                className="bg-[#1e1e1e] border-none transition-all duration-300 hover:scale-105 hover:bg-[#2a2a2a] touch-manipulation"
-                onMouseEnter={() => setHoveredProject(item)}
-                onMouseLeave={() => setHoveredProject(null)}
-              >
-                <CardContent className="p-0">
-                  <div className="aspect-video relative rounded-t-lg overflow-hidden">
-                    {item === 1 ? (
-                      <>
-                        <Image
-                          src="/free-your-mind-poster.png"
-                          alt="Free Your Mind Poster"
-                          fill
-                          style={{ objectFit: 'cover' }}
-                          className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
-                            hoveredProject === item ? "opacity-0" : "opacity-100"
-                          }`}
-                        />
-                        <Image
-                          src="/free-your-mind-demo.gif"
-                          alt="Free Your Mind Demo GIF"
-                          fill
-                          style={{ objectFit: 'cover' }}
-                          className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
-                            hoveredProject === item ? "opacity-100" : "opacity-0"
-                          }`}
-                        />
-                      </>
-                    ) : (
-                      <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-orange-400 via-red-400 to-blue-500 rounded-t-lg"></div>
-                    )}
-                  </div>
-                  <div className="p-4 sm:p-6">
-                    <h3 className="text-lg sm:text-xl font-bold mb-3 text-[#ffffff]">
-                      {item === 1 ? "Free Your Mind" : "Coming Soon"}
-                    </h3>
-                    <p className="text-gray-300 mb-4 text-sm sm:text-base leading-relaxed">
-                      {item === 1
-                        ? "Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII. Built with Vercel’s v0."
-                        : "Stay tuned for exciting new projects currently in the works! More details will be revealed soon."}
-                    </p>
-                    {item === 1 ? (
-                      <a href="https://free-your-mind.vercel.app/" target="_blank" rel="noopener noreferrer">
+          {/* Mobile Carousel */}
+          <div className="block lg:hidden">
+            <Carousel setApi={setApi} className="w-full mx-auto" opts={{ align: "center" }}>
+              <CarouselContent className="gap-x-4 -mx-2">
+                {[1, 2, 3].map((item) => (
+                  <CarouselItem key={item} className="px-2">
+                    <Card
+                      className="bg-[#1e1e1e] border-none transition-all duration-300 touch-manipulation"
+                      onMouseEnter={() => setHoveredProject(item)}
+                      onMouseLeave={() => setHoveredProject(null)}
+                    >
+                      <CardContent className="p-0">
+                        <div className="aspect-video relative rounded-t-lg overflow-hidden">
+                          {item === 1 ? (
+                            <>
+                              <Image
+                                src="/free-your-mind-poster.png"
+                                alt="Free Your Mind Poster"
+                                fill
+                                style={{ objectFit: 'cover' }}
+                                className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
+                                  hoveredProject === item ? "opacity-0" : "opacity-100"
+                                }`}
+                              />
+                              <Image
+                                src="/free-your-mind-demo.gif"
+                                alt="Free Your Mind Demo GIF"
+                                fill
+                                style={{ objectFit: 'cover' }}
+                                className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
+                                  hoveredProject === item ? "opacity-100" : "opacity-0"
+                                }`}
+                              />
+                            </>
+                          ) : (
+                            <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-orange-400 via-red-400 to-blue-500 rounded-t-lg"></div>
+                          )}
+                        </div>
+                        <div className="p-6 sm:p-8">
+                          <h3 className="text-lg sm:text-xl font-bold mb-3 text-[#ffffff]">
+                            {item === 1 ? "Free Your Mind" : "Coming Soon"}
+                          </h3>
+                          <p className="text-gray-300 mb-4 text-sm sm:text-base leading-relaxed">
+                            {item === 1
+                              ? "Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII. Built with Vercel’s v0."
+                              : "Stay tuned for exciting new projects currently in the works! More details will be revealed soon."}
+                          </p>
+                          {item === 1 ? (
+                            <a href="https://free-your-mind.vercel.app/" target="_blank" rel="noopener noreferrer">
+                              <GradientButton size="sm" className="w-full">
+                                READ MORE
+                              </GradientButton>
+                            </a>
+                          ) : (
+                            <GradientButton size="sm" className="w-full">
+                              COMING SOON
+                            </GradientButton>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+            {/* Pagination Dots */}
+            <div className="flex justify-center gap-2 mt-8">
+              {Array.from({ length: count }).map((_, index) => (
+                <div
+                  key={index}
+                  className={cn(
+                    "w-3 h-3 rounded-full",
+                    index + 1 === current
+                      ? "bg-gradient-to-r from-[#c94fc8] to-[#76d0d0]"
+                      : "bg-gray-700"
+                  )}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Grid */}
+          <div className="hidden lg:block">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+              {[1, 2, 3].map((item) => (
+                <Card
+                  key={item}
+                  className="bg-[#1e1e1e] border-none transition-all duration-300 lg:hover:scale-105 lg:hover:bg-[#2a2a2a] touch-manipulation"
+                  onMouseEnter={() => setHoveredProject(item)}
+                  onMouseLeave={() => setHoveredProject(null)}
+                >
+                  <CardContent className="p-0">
+                    <div className="aspect-video relative rounded-t-lg overflow-hidden">
+                      {item === 1 ? (
+                        <>
+                          <Image
+                            src="/free-your-mind-poster.png"
+                            alt="Free Your Mind Poster"
+                            fill
+                            style={{ objectFit: 'cover' }}
+                            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
+                              hoveredProject === item ? "opacity-0" : "opacity-100"
+                            }`}
+                          />
+                          <Image
+                            src="/free-your-mind-demo.gif"
+                            alt="Free Your Mind Demo GIF"
+                            fill
+                            style={{ objectFit: 'cover' }}
+                            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
+                              hoveredProject === item ? "opacity-100" : "opacity-0"
+                            }`}
+                          />
+                        </>
+                      ) : (
+                        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-orange-400 via-red-400 to-blue-500 rounded-t-lg"></div>
+                      )}
+                    </div>
+                    <div className="p-4 sm:p-6">
+                      <h3 className="text-lg sm:text-xl font-bold mb-3 text-[#ffffff]">
+                        {item === 1 ? "Free Your Mind" : "Coming Soon"}
+                      </h3>
+                      <p className="text-gray-300 mb-4 text-sm sm:text-base leading-relaxed">
+                        {item === 1
+                          ? "Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII. Built with Vercel’s v0."
+                          : "Stay tuned for exciting new projects currently in the works! More details will be revealed soon."}
+                      </p>
+                      {item === 1 ? (
+                        <a href="https://free-your-mind.vercel.app/" target="_blank" rel="noopener noreferrer">
+                          <GradientButton size="sm" className="w-full sm:w-auto">
+                            READ MORE
+                          </GradientButton>
+                        </a>
+                      ) : (
                         <GradientButton size="sm" className="w-full sm:w-auto">
-                          READ MORE
+                          COMING SOON
                         </GradientButton>
-                      </a>
-                    ) : (
-                      <GradientButton size="sm" className="w-full sm:w-auto">
-                        COMING SOON
-                      </GradientButton>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
       </section>
