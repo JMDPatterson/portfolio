@@ -54,9 +54,45 @@ export default function Portfolio() {
       {/* Hero Section */}
       <section
         id="hero"
-        className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12 bg-[#000000] text-[#ffffff] snap-start"
+        className="relative min-h-screen flex flex-col px-8 sm:px-12 pb-32 bg-[#000000] text-[#ffffff] snap-start overflow-hidden lg:flex lg:items-center lg:justify-center lg:px-4 lg:py-8 lg:py-12"
       >
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
+        {/* Quarter sphere background element - mobile only */}
+        <div className="absolute top-0 right-0 w-[90vw] h-[90vw] transform translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-[#c94fc8] to-[#76d0d0] block lg:hidden"></div>
+
+        {/* Content for the bottom three-quarters - mobile only */}
+        <div className="relative z-10 flex flex-col justify-end flex-grow w-full max-w-7xl mx-auto lg:hidden">
+          <div className="flex flex-col justify-center text-left">
+            {/* Header Badge */}
+            <div className="mb-4 flex justify-start">
+              <div className="inline-block bg-[#ffffff] text-[#000000] px-4 sm:px-6 py-2 rounded-full font-semibold text-sm sm:text-base">
+                JAMES PATTERSON
+              </div>
+            </div>
+
+            <h1 className="text-[12vw] lg:text-8xl font-bold leading-tight mb-3 lg:mb-6">
+              IMAGINE.
+              <br />
+              BUILD.
+              <br />
+              INSPIRE.
+            </h1>
+            <p className="text-base sm:text-lg mb-5 lg:mb-8 text-gray-300">
+              I work at the intersection of human creativity and emerging technology to redefine experiences.
+            </p>
+            <div className="flex justify-start">
+              <GradientButton
+                size="lg"
+                onClick={() => scrollToSection("work")}
+                className="w-full sm:w-auto sm:max-w-none"
+              >
+                EXPLORE MY WORK
+              </GradientButton>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop content - visible only on desktop */}
+        <div className="hidden lg:grid lg:grid-cols-2 lg:gap-8 lg:gap-12 lg:items-center lg:max-w-7xl lg:mx-auto lg:w-full">
           <div className="flex flex-col justify-center text-left">
             {/* Header Badge positioned above hero text */}
             <div className="mb-6 lg:mb-8 flex justify-start">
@@ -85,8 +121,8 @@ export default function Portfolio() {
               </GradientButton>
             </div>
           </div>
-          {/* Three spheres - hidden on mobile, visible on desktop */}
-          <div className="hidden lg:flex justify-center items-center">
+          {/* Three spheres - visible on desktop */}
+          <div className="flex justify-center items-center">
             <Image
               src="/three-spheres.svg"
               alt="Three spheres graphic"
