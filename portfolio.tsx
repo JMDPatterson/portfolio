@@ -231,7 +231,7 @@ export default function Portfolio() {
                           </h3>
                           <p className="text-gray-300 mb-4 text-sm sm:text-base leading-relaxed">
                             {item === 1
-                              ? "Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII. Built using v0."
+                              ? "Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII. Built with v0."
                               : "Stay tuned for exciting new projects currently in the works! More details will be revealed soon."}
                           </p>
                           {item === 1 ? (
@@ -311,7 +311,7 @@ export default function Portfolio() {
                       </h3>
                       <p className="text-gray-300 mb-4 text-sm sm:text-base leading-relaxed">
                         {item === 1
-                          ? "Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII. Built with Vercel’s v0."
+                          ? "Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII. Built with v0."
                           : "Stay tuned for exciting new projects currently in the works! More details will be revealed soon."}
                       </p>
                       {item === 1 ? (
