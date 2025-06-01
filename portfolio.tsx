@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Facebook, Twitter, Linkedin, Github } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState, useCallback } from "react"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { GradientButton } from "./components/gradient-button"
 import {
   Carousel,
@@ -19,6 +20,7 @@ import { cn } from "@/lib/utils"
 export default function Portfolio() {
   const [isHovered, setIsHovered] = useState(false)
   const [hoveredProject, setHoveredProject] = useState<number | null>(null)
+  const isMobile = useIsMobile()
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
   const [count, setCount] = useState(0)
@@ -94,7 +96,7 @@ export default function Portfolio() {
       {/* Hero Section */}
       <section
         id="hero"
-        className="relative min-h-screen flex flex-col px-8 sm:px-12 pb-32 bg-[#000000] text-[#ffffff] snap-start overflow-hidden lg:flex lg:items-center lg:justify-center lg:px-4 lg:py-8 lg:py-12"
+        className="relative min-h-screen flex flex-col px-8 sm:px-12 pb-32 bg-[#000000] text-[#ffffff] overflow-hidden lg:flex lg:items-center lg:justify-center lg:px-4 lg:py-8 lg:py-12"
       >
         {/* Quarter sphere background element - mobile only */}
         <div className="absolute top-0 right-0 w-[90vw] h-[90vw] transform translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-[#c94fc8] to-[#76d0d0] block lg:hidden"></div>
@@ -178,10 +180,10 @@ export default function Portfolio() {
       {/* What I've Worked On */}
       <section
         id="work"
-        className="min-h-screen flex items-center justify-center py-8 sm:py-12 lg:py-16 bg-[#000000] text-[#ffffff] snap-start"
+        className="min-h-screen flex items-center justify-center py-8 sm:py-12 lg:py-16 bg-[#000000] text-[#ffffff]"
       >
         <div className="max-w-7xl mx-auto w-full px-8 sm:px-12">
-          <h2 className="text-[10vw] sm:text-[10vw] lg:text-6xl font-bold text-left md:text-center mb-6 lg:mb-8">
+          <h2 className="text-[12vw] sm:text-[12vw] lg:text-6xl font-bold text-left md:text-center mb-6 lg:mb-8">
             WHAT I'VE<br className="lg:hidden" /> WORKED ON
           </h2>
           <p className="text-base sm:text-lg mb-8 lg:mb-12 text-gray-300 text-left md:text-center">
@@ -344,7 +346,7 @@ export default function Portfolio() {
       {/* My Background */}
       <section
         id="background"
-        className="min-h-screen flex flex-col px-8 sm:px-12 pb-32 bg-[#000000] text-[#ffffff] snap-start overflow-hidden lg:flex lg:items-center lg:justify-center lg:px-4 lg:py-8 lg:py-12"
+        className="min-h-screen flex flex-col px-8 sm:px-12 pb-32 bg-[#000000] text-[#ffffff] overflow-hidden lg:flex lg:items-center lg:justify-center lg:px-4 lg:py-8 lg:py-12"
       >
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
           <div className="flex flex-col justify-center text-left lg:text-left order-1 lg:order-1">
@@ -371,9 +373,11 @@ export default function Portfolio() {
           </div>
           <div className="flex justify-center lg:justify-center items-center order-2 lg:order-2 mb-8 lg:mb-0">
             <div
-              className="relative w-full aspect-square max-w-xs sm:max-w-sm md:max-w-md lg:w-96 lg:h-[28rem] mx-auto lg:mx-0 rounded-lg overflow-hidden transition-transform duration-700 hover:scale-105"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
+              className="relative w-full aspect-square max-w-xs sm:max-w-sm md:max-w-md lg:w-96 lg:h-[28rem] mx-auto lg:mx-0 rounded-lg overflow-hidden transition-transform duration-700 lg:hover:scale-105"
+              onMouseEnter={() => { if (!isMobile) setIsHovered(true); }}
+              onMouseLeave={() => { if (!isMobile) setIsHovered(false); }}
+              onTouchStart={() => { if (isMobile) setIsHovered(true); }}
+              onTouchEnd={() => { if (isMobile) setIsHovered(false); }}
             >
               <Image
                 src="/portrait.jpg"
@@ -403,7 +407,7 @@ export default function Portfolio() {
       {/* Let's Connect */}
       <section
         id="connect"
-        className="min-h-screen flex flex-col px-8 sm:px-12 pb-32 bg-[#000000] text-[#ffffff] snap-start overflow-hidden lg:flex lg:items-center lg:justify-center lg:px-4 lg:py-8 lg:py-12"
+        className="min-h-screen flex flex-col px-8 sm:px-12 bg-[#000000] text-[#ffffff] overflow-hidden lg:flex lg:items-center lg:justify-center lg:px-4 lg:py-8 lg:py-12"
       >
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
           <div className="flex flex-col justify-center text-left lg:text-left order-1 lg:order-1">

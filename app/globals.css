@@ -64,25 +64,25 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-color: #000000;
+    overscroll-behavior: contain;
   }
 }
 
 /* Full-screen scrolling styles */
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y mandatory;
+  background-color: #000000;
+  height: 100%;
 }
 
 body {
   overflow-x: hidden;
+  height: 100%;
 }
 
 /* Smooth scroll snap for sections */
-section {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-}
 
 /* Custom scrollbar for webkit browsers */
 ::-webkit-scrollbar {
@@ -124,10 +124,6 @@ a:focus-visible {
     min-width: 44px;
   }
 
-  /* Optimize scroll snap for mobile */
-  html {
-    scroll-snap-type: y proximity;
-  }
 
   /* Enhanced mobile typography */
   h1 {
