@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Facebook, Twitter, Linkedin, Github } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState, useCallback } from "react"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { GradientButton } from "./components/gradient-button"
 import {
   Carousel,
@@ -19,6 +20,7 @@ import { cn } from "@/lib/utils"
 export default function Portfolio() {
   const [isHovered, setIsHovered] = useState(false)
   const [hoveredProject, setHoveredProject] = useState<number | null>(null)
+  const isMobile = useIsMobile()
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
   const [count, setCount] = useState(0)
@@ -371,9 +373,11 @@ export default function Portfolio() {
           </div>
           <div className="flex justify-center lg:justify-center items-center order-2 lg:order-2 mb-8 lg:mb-0">
             <div
-              className="relative w-full aspect-square max-w-xs sm:max-w-sm md:max-w-md lg:w-96 lg:h-[28rem] mx-auto lg:mx-0 rounded-lg overflow-hidden transition-transform duration-700 hover:scale-105"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
+              className="relative w-full aspect-square max-w-xs sm:max-w-sm md:max-w-md lg:w-96 lg:h-[28rem] mx-auto lg:mx-0 rounded-lg overflow-hidden transition-transform duration-700 lg:hover:scale-105"
+              onMouseEnter={() => { if (!isMobile) setIsHovered(true); }}
+              onMouseLeave={() => { if (!isMobile) setIsHovered(false); }}
+              onTouchStart={() => { if (isMobile) setIsHovered(true); }}
+              onTouchEnd={() => { if (isMobile) setIsHovered(false); }}
             >
               <Image
                 src="/portrait.jpg"
