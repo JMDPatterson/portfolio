@@ -223,21 +223,50 @@ export default function Portfolio() {
                                 }`}
                               />
                             </>
+                          ) : item === 2 ? (
+                            <>
+                              <Image
+                                src="/MythVox.png"
+                                alt="MythVox Poster"
+                                fill
+                                style={{ objectFit: 'cover' }}
+                                className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
+                                  hoveredProject === item ? "opacity-0" : "opacity-100"
+                                }`}
+                              />
+                              <Image
+                                src="/MythVox.gif"
+                                alt="MythVox Demo GIF"
+                                fill
+                                style={{ objectFit: 'cover' }}
+                                className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
+                                  hoveredProject === item ? "opacity-100" : "opacity-0"
+                                }`}
+                              />
+                            </>
                           ) : (
                             <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-orange-400 via-red-400 to-blue-500 rounded-t-lg"></div>
                           )}
                         </div>
                         <div className="p-6 sm:p-8">
                           <h3 className="text-lg sm:text-xl font-bold mb-3 text-[#ffffff]">
-                            {item === 1 ? "Free Your Mind" : "Coming Soon"}
+                            {item === 1 ? "Free Your Mind" : item === 2 ? "MythVox" : "Coming Soon"}
                           </h3>
                           <p className="text-gray-300 mb-4 text-sm sm:text-base leading-relaxed">
                             {item === 1
                               ? "Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII. Built with v0."
+                              : item === 2
+                              ? "An AI-enhanced storytelling app for D&D campaigns. You create the story, MythVox brings it to life with narration and flair."
                               : "Stay tuned for exciting new projects currently in the works! More details will be revealed soon."}
                           </p>
                           {item === 1 ? (
                             <a href="https://free-your-mind.vercel.app/" target="_blank" rel="noopener noreferrer">
+                              <GradientButton size="sm" className="w-full">
+                                READ MORE
+                              </GradientButton>
+                            </a>
+                          ) : item === 2 ? (
+                            <a href="https://devpost.com/software/mythvox" target="_blank" rel="noopener noreferrer">
                               <GradientButton size="sm" className="w-full">
                                 READ MORE
                               </GradientButton>
@@ -303,21 +332,50 @@ export default function Portfolio() {
                             }`}
                           />
                         </>
+                      ) : item === 2 ? (
+                        <>
+                          <Image
+                            src="/MythVox.png"
+                            alt="MythVox Poster"
+                            fill
+                            style={{ objectFit: 'cover' }}
+                            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
+                              hoveredProject === item ? "opacity-0" : "opacity-100"
+                            }`}
+                          />
+                          <Image
+                            src="/MythVox.gif"
+                            alt="MythVox Demo GIF"
+                            fill
+                            style={{ objectFit: 'cover' }}
+                            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
+                              hoveredProject === item ? "opacity-100" : "opacity-0"
+                            }`}
+                          />
+                        </>
                       ) : (
                         <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-orange-400 via-red-400 to-blue-500 rounded-t-lg"></div>
                       )}
                     </div>
                     <div className="p-4 sm:p-6">
                       <h3 className="text-lg sm:text-xl font-bold mb-3 text-[#ffffff]">
-                        {item === 1 ? "Free Your Mind" : "Coming Soon"}
+                        {item === 1 ? "Free Your Mind" : item === 2 ? "MythVox" : "Coming Soon"}
                       </h3>
                       <p className="text-gray-300 mb-4 text-sm sm:text-base leading-relaxed">
                         {item === 1
                           ? "Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII. Built with v0."
+                          : item === 2
+                          ? "An AI-enhanced storytelling app for D&D campaigns. You create the story, MythVox brings it to life with narration and flair."
                           : "Stay tuned for exciting new projects currently in the works! More details will be revealed soon."}
                       </p>
                       {item === 1 ? (
                         <a href="https://free-your-mind.vercel.app/" target="_blank" rel="noopener noreferrer">
+                          <GradientButton size="sm" className="w-full">
+                            READ MORE
+                          </GradientButton>
+                        </a>
+                      ) : item === 2 ? (
+                        <a href="https://devpost.com/software/mythvox" target="_blank" rel="noopener noreferrer">
                           <GradientButton size="sm" className="w-full">
                             READ MORE
                           </GradientButton>
@@ -361,12 +419,12 @@ export default function Portfolio() {
                 meaningful human experiences.
               </p>
               <p className="text-sm sm:text-base lg:text-lg leading-relaxed">
-                With a background in design engineering and software development, I leverage creative problem-solving
-                with technical depth to explore the transformative potential of emerging technologies to drive
+                With a background in design engineering and software development, I combine creative problem-solving
+                with technical know-how to explore the potential of emerging technologies to drive
                 innovation, fostering new ways to connect, engage, and inspire.
               </p>
               <p className="text-sm sm:text-base lg:text-lg leading-relaxed">
-                Currently working at PwC UK, I explore the impact of emerging technologies on businesses and society,
+                Currently working at PwC UK, I explore the impact of AI and immersive technologies (AR/VR/XR) on businesses and society,
                 and guide clients through shaping the future of digital experiences.
               </p>
             </div>
