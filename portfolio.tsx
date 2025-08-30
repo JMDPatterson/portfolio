@@ -1,21 +1,50 @@
-"use client"
+'use client'
 
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Facebook, Twitter, Linkedin, Github } from "lucide-react"
-import Image from "next/image"
-import { useEffect, useState, useCallback } from "react"
-import { useIsMobile } from "@/hooks/use-mobile"
-import { GradientButton } from "./components/gradient-button"
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Linkedin, Github } from 'lucide-react'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { GradientButton } from './components/gradient-button'
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
   type CarouselApi,
-} from "@/components/ui/carousel"
-import { cn } from "@/lib/utils"
+} from '@/components/ui/carousel'
+import { cn } from '@/lib/utils'
+import { ProjectCard, type Project } from '@/components/ProjectCard'
+
+const projects: Project[] = [
+  {
+    id: 1,
+    title: 'Free Your Mind',
+    description: 'Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII. Built with v0.',
+    poster: '/free-your-mind-poster.png',
+    demo: '/free-your-mind-demo.gif',
+    link: 'https://free-your-mind.vercel.app/',
+    status: 'Live',
+  },
+  {
+    id: 2,
+    title: 'MythVox',
+    description: 'An online journal for role-playing games. You write the story, MythVox brings it to life with spoken narration and flair.',
+    poster: '/MythVox.png',
+    demo: '/MythVox.gif',
+    link: 'https://devpost.com/software/mythvox',
+    status: 'Live',
+  },
+  {
+    id: 3,
+    title: 'Coming Soon',
+    description: 'Stay tuned for exciting new projects currently in the works! More details will be revealed soon.',
+    poster: null,
+    demo: null,
+    link: null,
+    status: 'Coming Soon',
+  },
+];
 
 export default function Portfolio() {
   const [isHovered, setIsHovered] = useState(false)
@@ -29,17 +58,17 @@ export default function Portfolio() {
     // Smooth scrolling polyfill for older browsers
     const smoothScrollTo = (element: Element) => {
       element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
+        behavior: 'smooth',
+        block: 'start',
       })
     }
 
     // Add smooth scrolling to any anchor links
     const links = document.querySelectorAll('a[href^="#"]')
     links.forEach((link) => {
-      link.addEventListener("click", (e) => {
+      link.addEventListener('click', (e) => {
         e.preventDefault()
-        const target = document.querySelector(link.getAttribute("href") || "")
+        const target = document.querySelector(link.getAttribute('href') || '')
         if (target) {
           smoothScrollTo(target)
         }
@@ -48,7 +77,7 @@ export default function Portfolio() {
 
     return () => {
       links.forEach((link) => {
-        link.removeEventListener("click", () => {})
+        link.removeEventListener('click', () => {})
       })
     }
   }, [])
@@ -65,19 +94,19 @@ export default function Portfolio() {
     const onSelect = () => {
       setCurrent(api.selectedScrollSnap() + 1)
     }
-    api.on("select", onSelect)
+    api.on('select', onSelect)
 
     // Listen for init event to ensure count is correct after initialization
     const onInit = () => {
       setCount(api.scrollSnapList().length)
       setCurrent(api.selectedScrollSnap() + 1)
     }
-    api.on("init", onInit)
+    api.on('init', onInit)
 
     // Cleanup function
     return () => {
-      api.off("select", onSelect)
-      api.off("init", onInit)
+      api.off('select', onSelect)
+      api.off('init', onInit)
     }
   }, [api])
 
@@ -85,8 +114,8 @@ export default function Portfolio() {
     const section = document.getElementById(sectionId)
     if (section) {
       section.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
+        behavior: 'smooth',
+        block: 'start',
       })
     }
   }
@@ -124,7 +153,7 @@ export default function Portfolio() {
             <div className="flex justify-start">
               <GradientButton
                 size="lg"
-                onClick={() => scrollToSection("work")}
+                onClick={() => scrollToSection('work')}
                 className="w-full"
               >
                 EXPLORE MY WORK
@@ -156,7 +185,7 @@ export default function Portfolio() {
             <div className="flex justify-start">
               <GradientButton
                 size="lg"
-                onClick={() => scrollToSection("work")}
+                onClick={() => scrollToSection('work')}
                 className="w-full sm:w-auto max-w-xs sm:max-w-none"
               >
                 EXPLORE MY WORK
@@ -191,94 +220,11 @@ export default function Portfolio() {
           </p>
           {/* Mobile Carousel */}
           <div className="block lg:hidden">
-            <Carousel setApi={setApi} className="w-full mx-auto" opts={{ align: "center" }}>
+            <Carousel setApi={setApi} className="w-full mx-auto" opts={{ align: 'center' }}>
               <CarouselContent className="gap-x-4 -mx-2">
-                {[1, 2, 3].map((item) => (
-                  <CarouselItem key={item} className="px-2">
-                    <Card
-                      className="bg-[#1e1e1e] border-none transition-all duration-300 touch-manipulation"
-                      onMouseEnter={() => setHoveredProject(item)}
-                      onMouseLeave={() => setHoveredProject(null)}
-                    >
-                      <CardContent className="p-0">
-                        <div className="aspect-video relative rounded-t-lg overflow-hidden">
-                          {item === 1 ? (
-                            <>
-                              <Image
-                                src="/free-your-mind-poster.png"
-                                alt="Free Your Mind Poster"
-                                fill
-                                style={{ objectFit: 'cover' }}
-                                className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
-                                  hoveredProject === item ? "opacity-0" : "opacity-100"
-                                }`}
-                              />
-                              <Image
-                                src="/free-your-mind-demo.gif"
-                                alt="Free Your Mind Demo GIF"
-                                fill
-                                style={{ objectFit: 'cover' }}
-                                className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
-                                  hoveredProject === item ? "opacity-100" : "opacity-0"
-                                }`}
-                              />
-                            </>
-                          ) : item === 2 ? (
-                            <>
-                              <Image
-                                src="/MythVox.png"
-                                alt="MythVox Poster"
-                                fill
-                                style={{ objectFit: 'cover' }}
-                                className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
-                                  hoveredProject === item ? "opacity-0" : "opacity-100"
-                                }`}
-                              />
-                              <Image
-                                src="/MythVox.gif"
-                                alt="MythVox Demo GIF"
-                                fill
-                                style={{ objectFit: 'cover' }}
-                                className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
-                                  hoveredProject === item ? "opacity-100" : "opacity-0"
-                                }`}
-                              />
-                            </>
-                          ) : (
-                            <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-orange-400 via-red-400 to-blue-500 rounded-t-lg"></div>
-                          )}
-                        </div>
-                        <div className="p-6 sm:p-8">
-                          <h3 className="text-lg sm:text-xl font-bold mb-3 text-[#ffffff]">
-                            {item === 1 ? "Free Your Mind" : item === 2 ? "MythVox" : "Coming Soon"}
-                          </h3>
-                          <p className="text-gray-300 mb-4 text-sm sm:text-base leading-relaxed">
-                            {item === 1
-                              ? "Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII. Built with v0."
-                              : item === 2
-                              ? "An AI-enhanced storytelling app for D&D campaigns. You create the story, MythVox brings it to life with narration and flair."
-                              : "Stay tuned for exciting new projects currently in the works! More details will be revealed soon."}
-                          </p>
-                          {item === 1 ? (
-                            <a href="https://free-your-mind.vercel.app/" target="_blank" rel="noopener noreferrer">
-                              <GradientButton size="sm" className="w-full">
-                                READ MORE
-                              </GradientButton>
-                            </a>
-                          ) : item === 2 ? (
-                            <a href="https://devpost.com/software/mythvox" target="_blank" rel="noopener noreferrer">
-                              <GradientButton size="sm" className="w-full">
-                                READ MORE
-                              </GradientButton>
-                            </a>
-                          ) : (
-                            <GradientButton size="sm" className="w-full">
-                              COMING SOON
-                            </GradientButton>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
+                {projects.map((project) => (
+                  <CarouselItem key={project.id} className="px-2" onMouseEnter={() => setHoveredProject(project.id)} onMouseLeave={() => setHoveredProject(null)}>
+                    <ProjectCard project={project} isHovered={hoveredProject === project.id} />
                   </CarouselItem>
                 ))}
               </CarouselContent>
@@ -289,10 +235,10 @@ export default function Portfolio() {
                 <div
                   key={index}
                   className={cn(
-                    "w-3 h-3 rounded-full",
+                    'w-3 h-3 rounded-full',
                     index + 1 === current
-                      ? "bg-gradient-to-r from-[#c94fc8] to-[#76d0d0]"
-                      : "bg-gray-700"
+                      ? 'bg-gradient-to-r from-[#c94fc8] to-[#76d0d0]'
+                      : 'bg-gray-700'
                   )}
                 />
               ))}
@@ -302,92 +248,10 @@ export default function Portfolio() {
           {/* Desktop Grid */}
           <div className="hidden lg:block">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
-              {[1, 2, 3].map((item) => (
-                <Card
-                  key={item}
-                  className="bg-[#1e1e1e] border-none transition-all duration-300 lg:hover:scale-105 lg:hover:bg-[#2a2a2a] touch-manipulation"
-                  onMouseEnter={() => setHoveredProject(item)}
-                  onMouseLeave={() => setHoveredProject(null)}
-                >
-                  <CardContent className="p-0">
-                    <div className="aspect-video relative rounded-t-lg overflow-hidden">
-                      {item === 1 ? (
-                        <>
-                          <Image
-                            src="/free-your-mind-poster.png"
-                            alt="Free Your Mind Poster"
-                            fill
-                            style={{ objectFit: 'cover' }}
-                            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
-                              hoveredProject === item ? "opacity-0" : "opacity-100"
-                            }`}
-                          />
-                          <Image
-                            src="/free-your-mind-demo.gif"
-                            alt="Free Your Mind Demo GIF"
-                            fill
-                            style={{ objectFit: 'cover' }}
-                            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
-                              hoveredProject === item ? "opacity-100" : "opacity-0"
-                            }`}
-                          />
-                        </>
-                      ) : item === 2 ? (
-                        <>
-                          <Image
-                            src="/MythVox.png"
-                            alt="MythVox Poster"
-                            fill
-                            style={{ objectFit: 'cover' }}
-                            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
-                              hoveredProject === item ? "opacity-0" : "opacity-100"
-                            }`}
-                          />
-                          <Image
-                            src="/MythVox.gif"
-                            alt="MythVox Demo GIF"
-                            fill
-                            style={{ objectFit: 'cover' }}
-                            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
-                              hoveredProject === item ? "opacity-100" : "opacity-0"
-                            }`}
-                          />
-                        </>
-                      ) : (
-                        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-orange-400 via-red-400 to-blue-500 rounded-t-lg"></div>
-                      )}
-                    </div>
-                    <div className="p-4 sm:p-6">
-                      <h3 className="text-lg sm:text-xl font-bold mb-3 text-[#ffffff]">
-                        {item === 1 ? "Free Your Mind" : item === 2 ? "MythVox" : "Coming Soon"}
-                      </h3>
-                      <p className="text-gray-300 mb-4 text-sm sm:text-base leading-relaxed">
-                        {item === 1
-                          ? "Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII. Built with v0."
-                          : item === 2
-                          ? "An AI-enhanced storytelling app for D&D campaigns. You create the story, MythVox brings it to life with narration and flair."
-                          : "Stay tuned for exciting new projects currently in the works! More details will be revealed soon."}
-                      </p>
-                      {item === 1 ? (
-                        <a href="https://free-your-mind.vercel.app/" target="_blank" rel="noopener noreferrer">
-                          <GradientButton size="sm" className="w-full">
-                            READ MORE
-                          </GradientButton>
-                        </a>
-                      ) : item === 2 ? (
-                        <a href="https://devpost.com/software/mythvox" target="_blank" rel="noopener noreferrer">
-                          <GradientButton size="sm" className="w-full">
-                            READ MORE
-                          </GradientButton>
-                        </a>
-                      ) : (
-                        <GradientButton size="sm" className="w-full">
-                          COMING SOON
-                        </GradientButton>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
+              {projects.map((project) => (
+                <div key={project.id} onMouseEnter={() => setHoveredProject(project.id)} onMouseLeave={() => setHoveredProject(null)}>
+                  <ProjectCard project={project} isHovered={hoveredProject === project.id} />
+                </div>
               ))}
             </div>
             {/* Pagination Dots */}
@@ -443,7 +307,7 @@ export default function Portfolio() {
                 width={384}
                 height={448}
                 className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-                  isHovered ? "opacity-0" : "opacity-100"
+                  isHovered ? 'opacity-0' : 'opacity-100'
                 }`}
                 loading="lazy"
               />
@@ -453,7 +317,7 @@ export default function Portfolio() {
                 width={384}
                 height={448}
                 className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-                  isHovered ? "opacity-100" : "opacity-0"
+                  isHovered ? 'opacity-100' : 'opacity-0'
                 }`}
                 loading="lazy"
               />
@@ -480,7 +344,7 @@ export default function Portfolio() {
               </p>
             </div>
             <div className="flex justify-start gap-4 mb-6 lg:mb-8">
-              <a href="https://github.com/JMDPatterson" target="_blank" rel="noopener noreferrer">
+              <a href="https://github.com/JMDPatterson" target="_blank" rel="noopener noreferrer" aria-label="View my GitHub profile">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -489,7 +353,7 @@ export default function Portfolio() {
                   <Github className="w-5 h-5" />
                 </Button>
               </a>
-              <a href="https://www.linkedin.com/in/jmdpatterson/" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.linkedin.com/in/jmdpatterson/" target="_blank" rel="noopener noreferrer" aria-label="View my LinkedIn profile">
                 <Button
                   variant="ghost"
                   size="icon"
