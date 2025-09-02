@@ -24,6 +24,7 @@ const projects: Project[] = [
     demo: '/free-your-mind-demo.gif',
     link: 'https://free-your-mind.vercel.app/',
     status: 'Live',
+    tags: ['Next.js', 'Vercel', 'v0', 'TypeScript', 'Tailwind CSS'],
   },
   {
     id: 2,
@@ -33,6 +34,7 @@ const projects: Project[] = [
     demo: '/MythVox.gif',
     link: 'https://devpost.com/software/mythvox',
     status: 'Live',
+    tags: ['Next.js', 'Three.js', 'Supabase', 'Google Gemini', 'ElevenLabs'],
   },
   {
     id: 3,
@@ -42,6 +44,7 @@ const projects: Project[] = [
     demo: null,
     link: null,
     status: 'Coming Soon',
+    tags: [],
   },
 ];
 

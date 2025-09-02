@@ -3,6 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image"
 import { GradientButton } from "./gradient-button"
+import { Badge } from "@/components/ui/badge"
 
 export type Project = {
   id: number
@@ -12,6 +13,7 @@ export type Project = {
   demo: string | null
   link: string | null
   status: string
+  tags: string[]
 }
 
 type ProjectCardProps = {
@@ -58,6 +60,13 @@ export function ProjectCard({ project, isHovered }: ProjectCardProps) {
           <p className="text-gray-300 mb-4 text-sm sm:text-base leading-relaxed">
             {project.description}
           </p>
+          <div className="flex flex-wrap gap-2 mb-4 h-auto flex-grow">
+            {project.tags.map((tag) => (
+              <Badge key={tag} variant="secondary">
+                {tag}
+              </Badge>
+            ))}
+          </div>
           {project.link ? (
             <a href={project.link} target="_blank" rel="noopener noreferrer">
               <GradientButton size="sm" className="w-full">
