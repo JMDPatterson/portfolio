@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/JMDPatterson/portfolio/compare/v1.0.0...v1.1.0) (2025-09-02)
+
+
+### Features
+
+* **portfolio:** add tags to projects to highlight tech stacks used ([9863623](https://github.com/JMDPatterson/portfolio/commit/9863623135d97167f6366f51a10f4cb1685e54d4))
+* **portfolio:** update ProjectCard to support video demos and added new project ([45a8a84](https://github.com/JMDPatterson/portfolio/commit/45a8a84f2aed243e3bf36527f1306db1575f74eb))
+
 # 1.0.0 (2025-08-30)
 
 
