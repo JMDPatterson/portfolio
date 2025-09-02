@@ -23,7 +23,7 @@ const projects: Project[] = [
     poster: '/free-your-mind-poster.png',
     demo: '/free-your-mind-demo.gif',
     link: 'https://free-your-mind.vercel.app/',
-    status: 'Live',
+    tags: ['Next.js', 'Vercel', 'v0', 'TypeScript', 'Tailwind CSS'],
   },
   {
     id: 2,
@@ -32,16 +32,25 @@ const projects: Project[] = [
     poster: '/MythVox.png',
     demo: '/MythVox.gif',
     link: 'https://devpost.com/software/mythvox',
-    status: 'Live',
+    tags: ['Next.js', 'Three.js', 'Supabase', 'Google Gemini', 'ElevenLabs'],
   },
   {
     id: 3,
+    title: 'Time Warp',
+    description: 'Historical reconstruction of a country property in the South of France, blending AI with archive records.',
+    poster: '/timewarp.png',
+    demo: '/timewarp.mp4',
+    link: null,
+    tags: ['Google Gemini'],
+  },
+  {
+    id: 4,
     title: 'Coming Soon',
-    description: 'Stay tuned for exciting new projects currently in the works! More details will be revealed soon.',
+    description: 'Stay tuned for exciting new projects currently in the works!',
     poster: null,
     demo: null,
     link: null,
-    status: 'Coming Soon',
+    tags: ['TBC'],
   },
 ];
 

@@ -3,6 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image"
 import { GradientButton } from "./gradient-button"
+import { Badge } from "@/components/ui/badge"
 
 export type Project = {
   id: number
@@ -11,7 +12,7 @@ export type Project = {
   poster: string | null
   demo: string | null
   link: string | null
-  status: string
+  tags: string[]
 }
 
 type ProjectCardProps = {
@@ -37,15 +38,28 @@ export function ProjectCard({ project, isHovered }: ProjectCardProps) {
                   isHovered ? "opacity-0" : "opacity-100"
                 }`}
               />
-              <Image
-                src={project.demo}
-                alt={`${project.title} Demo GIF`}
-                fill
-                style={{ objectFit: "cover" }}
-                className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
-                  isHovered ? "opacity-100" : "opacity-0"
-                }`}
-              />
+              {project.demo.endsWith('.mp4') ? (
+                <video
+                  src={project.demo}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                    isHovered ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+              ) : (
+                <Image
+                  src={project.demo}
+                  alt={`${project.title} Demo GIF`}
+                  fill
+                  style={{ objectFit: "cover" }}
+                  className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
+                    isHovered ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+              )}
             </>
           ) : (
             <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-orange-400 via-red-400 to-blue-500 rounded-t-lg"></div>
@@ -58,6 +72,15 @@ export function ProjectCard({ project, isHovered }: ProjectCardProps) {
           <p className="text-gray-300 mb-4 text-sm sm:text-base leading-relaxed">
             {project.description}
           </p>
+          <div className="flex flex-col justify-start gap-2 mb-4 min-h-[4.5rem]">
+            <div className="flex flex-wrap gap-2">
+              {project.tags.map((tag) => (
+                <Badge key={tag} variant="secondary">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          </div>
           {project.link ? (
             <a href={project.link} target="_blank" rel="noopener noreferrer">
               <GradientButton size="sm" className="w-full">
