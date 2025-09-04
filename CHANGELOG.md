@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/JMDPatterson/portfolio/compare/v1.1.0...v1.2.0) (2025-09-04)
+
+
+### Features
+
+* **portfolio:** update Time Warp project tags and video, autoplay videos on mobile. ([6d28b7f](https://github.com/JMDPatterson/portfolio/commit/6d28b7f4acc5617517742f9f5924576052982cc9))
+
 # [1.1.0](https://github.com/JMDPatterson/portfolio/compare/v1.0.0...v1.1.0) (2025-09-02)
 
 
