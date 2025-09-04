@@ -41,7 +41,7 @@ const projects: Project[] = [
     poster: '/timewarp.png',
     demo: '/timewarp.mp4',
     link: null,
-    tags: ['Google Gemini'],
+    tags: ['Google Gemini','Veo 3'],
   },
   {
     id: 4,
@@ -156,7 +156,7 @@ export default function Portfolio() {
               INSPIRE.
             </h1>
             <p className="text-base sm:text-lg mb-5 lg:mb-8 text-gray-300">
-              I work at the intersection of human creativity and emerging technology to redefine experiences.
+              I work at the intersection of human creativity and emerging technology to create meaningful and immersive experiences.
             </p>
             <div className="flex justify-start">
               <GradientButton
@@ -188,7 +188,7 @@ export default function Portfolio() {
               INSPIRE.
             </h1>
             <p className="text-base sm:text-lg mb-6 lg:mb-8 text-gray-300 max-w-lg">
-              I work at the intersection of human creativity and emerging technology to redefine experiences.
+              I work at the intersection of human creativity and emerging technology to create meaningful and immersive experiences.
             </p>
             <div className="flex justify-start">
               <GradientButton
@@ -230,9 +230,9 @@ export default function Portfolio() {
           <div className="block lg:hidden">
             <Carousel setApi={setApi} className="w-full mx-auto" opts={{ align: 'center' }}>
               <CarouselContent className="gap-x-4 -mx-2">
-                {projects.map((project) => (
+                {projects.map((project, index) => (
                   <CarouselItem key={project.id} className="px-2" onMouseEnter={() => setHoveredProject(project.id)} onMouseLeave={() => setHoveredProject(null)}>
-                    <ProjectCard project={project} isHovered={hoveredProject === project.id} />
+                    <ProjectCard project={project} isHovered={(isMobile && current - 1 === index) || (!isMobile && hoveredProject === project.id)} />
                   </CarouselItem>
                 ))}
               </CarouselContent>
@@ -287,13 +287,11 @@ export default function Portfolio() {
             </h2>
             <div className="space-y-4 lg:space-y-6 text-gray-300">
               <p className="text-sm sm:text-base lg:text-lg leading-relaxed">
-                I'm a creative technologist passionate about leveraging emerging technologies to craft elegant and
-                meaningful human experiences.
+                I'm a UK-based creative technologist, passionate about leveraging emerging technologies to craft innovative and human-centred experiences.
               </p>
               <p className="text-sm sm:text-base lg:text-lg leading-relaxed">
                 With a background in design engineering and software development, I combine creative problem-solving
-                with technical know-how to explore the potential of emerging technologies to drive
-                innovation, fostering new ways to connect, engage, and inspire.
+                with technical know-how to explore projects that push the boundary of what's possible.
               </p>
               <p className="text-sm sm:text-base lg:text-lg leading-relaxed">
                 Currently working at PwC UK, I explore the impact of AI and immersive technologies (AR/VR/XR) on businesses and society,
