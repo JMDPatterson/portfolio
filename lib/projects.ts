@@ -26,17 +26,17 @@ export const projects: Project[] = [
     id: 1,
     slug: 'free-your-mind',
     title: 'Free Your Mind',
-    description: 'Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII. Built with v0.',
+    description: 'Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII.',
     poster: '/free-your-mind-poster.png',
     demo: '/free-your-mind-demo.mp4',
     link: 'https://free-your-mind.vercel.app/',
     linkLabel: 'LAUNCH THE EXPERIENCE',
-    tags: ['Next.js', 'Vercel', 'v0', 'TypeScript', 'Tailwind CSS'],
+    tags: ['Next.js', 'Vercel', 'TypeScript', 'Tailwind CSS'],
     details: {
       brief:
         'A self-initiated experiment: could a familiar cinematic moment be rebuilt as something you can play with in the browser? The aim was an interactive homage to The Matrix that turns iconic scenes into live ASCII.',
       approach:
-        'Prototyped with v0 to get from idea to a working build quickly, then developed on Next.js, TypeScript and Tailwind CSS and deployed on Vercel.',
+        'Built with Next.js, TypeScript and Tailwind CSS and deployed on Vercel, with the ASCII rendering driving the interactive scenes.',
       design:
         'Scenes are rendered as dynamic ASCII in a green-on-black palette, echoing the film’s digital rain, so the look stays instantly recognisable and the interaction carries the experience.',
       outcome:
