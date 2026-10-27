@@ -19,11 +19,11 @@ const projects: Project[] = [
   {
     id: 1,
     title: 'Free Your Mind',
-    description: 'Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII. Built with v0.',
+    description: 'Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII.',
     poster: '/free-your-mind-poster.png',
     demo: '/free-your-mind-demo.mp4',
     link: 'https://free-your-mind.vercel.app/',
-    tags: ['Next.js', 'Vercel', 'v0', 'TypeScript', 'Tailwind CSS'],
+    tags: ['Next.js', 'Vercel', 'TypeScript', 'Tailwind CSS'],
   },
   {
     id: 2,
@@ -47,12 +47,6 @@ const projects: Project[] = [
 
 
 const CONTACT_URL = 'https://form.typeform.com/to/z6VvFjSJ'
-
-const navLinks = [
-  { href: '#work', label: 'Work' },
-  { href: '#background', label: 'About' },
-  { href: '#connect', label: 'Contact' },
-]
 
 export default function Portfolio() {
   const [isHovered, setIsHovered] = useState(false)
@@ -106,30 +100,6 @@ export default function Portfolio() {
         Skip to content
       </a>
 
-      {/* Navigation */}
-      <header className="fixed top-0 inset-x-0 z-50 bg-black/70 backdrop-blur-md border-b border-white/10">
-        <nav
-          aria-label="Primary"
-          className="max-w-7xl mx-auto flex items-center justify-between px-8 sm:px-12 lg:px-4 h-14"
-        >
-          <a href="#hero" className="font-bold tracking-wide">
-            JP
-          </a>
-          <ul className="flex items-center gap-1 sm:gap-4">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="inline-flex items-center min-h-[44px] px-3 text-sm text-gray-300 hover:text-white transition-colors"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </header>
-
       <main>
         {/* Hero Section */}
         <section
@@ -161,15 +131,12 @@ export default function Portfolio() {
                 I work at the intersection of human creativity and emerging technology to create meaningful and immersive experiences.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 max-w-xs sm:max-w-none">
-                <GradientButton size="lg" onClick={() => scrollToSection('work')}>
+                <GradientButton size="lg" className="sm:w-56" onClick={() => scrollToSection('work')}>
                   EXPLORE MY WORK
                 </GradientButton>
-                <a
-                  href="#connect"
-                  className="inline-flex items-center justify-center min-h-[48px] px-8 py-4 text-base font-semibold border border-white/40 hover:border-white hover:bg-white/10 transition-colors"
-                >
+                <GradientButton size="lg" className="sm:w-56" onClick={() => scrollToSection('connect')}>
                   GET IN TOUCH
-                </a>
+                </GradientButton>
               </div>
             </div>
             {/* Three spheres - visible on desktop */}
@@ -190,7 +157,7 @@ export default function Portfolio() {
         {/* What I've Worked On */}
         <section
           id="work"
-          className="min-h-screen flex items-center justify-center py-16 lg:py-24 scroll-mt-14"
+          className="min-h-screen flex items-center justify-center py-16 lg:py-24"
         >
           <div className="max-w-7xl mx-auto w-full px-8 sm:px-12">
             <h2 className="text-[12vw] sm:text-[12vw] lg:text-6xl font-bold text-left md:text-center mb-6 lg:mb-8">
@@ -256,7 +223,7 @@ export default function Portfolio() {
         {/* My Background */}
         <section
           id="background"
-          className="min-h-screen flex flex-col justify-center px-8 sm:px-12 py-16 lg:px-4 overflow-hidden scroll-mt-14"
+          className="min-h-screen flex flex-col justify-center px-8 sm:px-12 py-16 lg:px-4 overflow-hidden"
         >
           <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
             <div className="flex flex-col justify-center text-left">
@@ -316,7 +283,7 @@ export default function Portfolio() {
         {/* Let's Connect */}
         <section
           id="connect"
-          className="min-h-screen flex flex-col justify-center px-8 sm:px-12 py-16 lg:px-4 overflow-hidden scroll-mt-14"
+          className="min-h-screen flex flex-col justify-center px-8 sm:px-12 py-16 lg:px-4 overflow-hidden"
         >
           <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
             <div className="flex flex-col justify-center text-left">
