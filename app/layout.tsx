@@ -37,6 +37,7 @@ const personJsonLd = {
   '@type': 'Person',
   name: 'James Patterson',
   url: SITE_URL,
+  email: 'jmdpatterson1@gmail.com',
   jobTitle: 'Creative Technologist',
   worksFor: { '@type': 'Organization', name: 'PwC UK' },
   sameAs: [

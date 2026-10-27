@@ -13,40 +13,9 @@ import {
   type CarouselApi,
 } from '@/components/ui/carousel'
 import { cn } from '@/lib/utils'
-import { ProjectCard, type Project } from '@/components/ProjectCard'
-
-const projects: Project[] = [
-  {
-    id: 1,
-    title: 'Free Your Mind',
-    description: 'Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII. Built with v0.',
-    poster: '/free-your-mind-poster.png',
-    demo: '/free-your-mind-demo.mp4',
-    link: 'https://free-your-mind.vercel.app/',
-    tags: ['Next.js', 'Vercel', 'v0', 'TypeScript', 'Tailwind CSS'],
-  },
-  {
-    id: 2,
-    title: 'MythVox',
-    description: 'An online journal for role-playing games. You write the story, MythVox brings it to life with spoken narration and flair.',
-    poster: '/MythVox.jpg',
-    demo: '/MythVox.mp4',
-    link: 'https://devpost.com/software/mythvox',
-    tags: ['Next.js', 'Three.js', 'Supabase', 'Google Gemini', 'ElevenLabs'],
-  },
-  {
-    id: 3,
-    title: 'Time Warp',
-    description: 'Historical reconstruction of a country property in the South of France, blending AI with archive records.',
-    poster: '/timewarp.jpg',
-    demo: '/timewarp.mp4',
-    link: null,
-    tags: ['Google Gemini','Veo 3'],
-  },
-];
-
-
-const CONTACT_URL = 'https://form.typeform.com/to/z6VvFjSJ'
+import { ProjectCard } from '@/components/ProjectCard'
+import { ProjectDialog } from '@/components/ProjectDialog'
+import { CONTACT_EMAIL, projects, type Project } from '@/lib/projects'
 
 const navLinks = [
   { href: '#work', label: 'Work' },
@@ -61,6 +30,7 @@ export default function Portfolio() {
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
   const [count, setCount] = useState(0)
+  const [openProject, setOpenProject] = useState<Project | null>(null)
 
   // Carousel effect for slide tracking
   useEffect(() => {
@@ -205,7 +175,7 @@ export default function Portfolio() {
                 <CarouselContent className="gap-x-4 -mx-2">
                   {projects.map((project, index) => (
                     <CarouselItem key={project.id} className="px-2">
-                      <ProjectCard project={project} isHovered={current - 1 === index} />
+                      <ProjectCard project={project} isHovered={current - 1 === index} onOpen={setOpenProject} />
                     </CarouselItem>
                   ))}
                 </CarouselContent>
@@ -245,7 +215,7 @@ export default function Portfolio() {
                     onFocus={() => setHoveredProject(project.id)}
                     onBlur={() => setHoveredProject(null)}
                   >
-                    <ProjectCard project={project} isHovered={hoveredProject === project.id} />
+                    <ProjectCard project={project} isHovered={hoveredProject === project.id} onOpen={setOpenProject} />
                   </div>
                 ))}
               </div>
@@ -326,7 +296,10 @@ export default function Portfolio() {
                   I&apos;m open to new roles and freelance projects in AI, immersive tech and creative development.
                 </p>
                 <p className="text-sm sm:text-base lg:text-lg leading-relaxed">
-                  Hiring, have a project in mind, or just want to swap ideas on emerging technology? Get in touch.
+                  Hiring, have a project in mind, or just want to swap ideas on emerging technology? Get in touch at{' '}
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="text-white underline underline-offset-4 hover:text-[#76d0d0]">
+                    {CONTACT_EMAIL}
+                  </a>.
                 </p>
               </div>
               <div className="flex justify-start gap-4 mb-6 lg:mb-8">
@@ -353,8 +326,8 @@ export default function Portfolio() {
               </div>
               <div className="flex justify-start">
                 <GradientButton size="lg" asChild className="w-full sm:w-auto">
-                  <a href={CONTACT_URL} target="_blank" rel="noopener noreferrer">
-                    CONTACT ME
+                  <a href={`mailto:${CONTACT_EMAIL}`}>
+                    EMAIL ME
                   </a>
                 </GradientButton>
               </div>
@@ -373,6 +346,8 @@ export default function Portfolio() {
           </div>
         </section>
       </main>
+
+      <ProjectDialog project={openProject} onClose={() => setOpenProject(null)} />
     </div>
   )
 }

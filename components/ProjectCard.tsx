@@ -5,23 +5,15 @@ import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image"
 import { GradientButton } from "./gradient-button"
 import { Badge } from "@/components/ui/badge"
-
-export type Project = {
-  id: number
-  title: string
-  description: string
-  poster: string | null
-  demo: string | null
-  link: string | null
-  tags: string[]
-}
+import type { Project } from "@/lib/projects"
 
 type ProjectCardProps = {
   project: Project
   isHovered: boolean
+  onOpen: (project: Project) => void
 }
 
-export function ProjectCard({ project, isHovered }: ProjectCardProps) {
+export function ProjectCard({ project, isHovered, onOpen }: ProjectCardProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
 
   // Only fetch and play the demo while the card is active
@@ -41,8 +33,7 @@ export function ProjectCard({ project, isHovered }: ProjectCardProps) {
     >
       <CardContent className="p-0">
         <div className="aspect-video relative rounded-t-lg overflow-hidden">
-          {project.poster && project.demo ? (
-            <>
+          <>
               <Image
                 src={project.poster}
                 alt={`${project.title} preview`}
@@ -65,10 +56,7 @@ export function ProjectCard({ project, isHovered }: ProjectCardProps) {
                   isHovered ? "opacity-100" : "opacity-0"
                 }`}
               />
-            </>
-          ) : (
-            <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-orange-400 via-red-400 to-blue-500 rounded-t-lg"></div>
-          )}
+          </>
         </div>
         <div className="p-6 sm:p-8">
           <h3 className="text-lg sm:text-xl font-bold mb-3 text-[#ffffff]">
@@ -84,22 +72,15 @@ export function ProjectCard({ project, isHovered }: ProjectCardProps) {
               </Badge>
             ))}
           </div>
-          {project.link ? (
-            <GradientButton size="sm" asChild className="w-full">
-              <a
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Read more about ${project.title} (opens in a new tab)`}
-              >
-                READ MORE
-              </a>
-            </GradientButton>
-          ) : (
-            <GradientButton size="sm" className="w-full" disabled>
-              COMING SOON
-            </GradientButton>
-          )}
+          <GradientButton
+            size="sm"
+            className="w-full"
+            onClick={() => onOpen(project)}
+            aria-haspopup="dialog"
+            aria-label={`Read more about ${project.title}`}
+          >
+            READ MORE
+          </GradientButton>
         </div>
       </CardContent>
     </Card>
