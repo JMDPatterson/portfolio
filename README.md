@@ -1,29 +1,23 @@
-# My Portfolio
+# Portfolio
 
-## Table of Contents
+Personal portfolio for James Patterson, built with Next.js and deployed to GitHub Pages at [jmdpatterson.com](https://jmdpatterson.com).
 
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Usage](#usage)
-- [License](#license)
+## Stack
 
-## Features
+- Next.js (static export), React, TypeScript
+- Tailwind CSS, shadcn/ui (`button`, `card`, `badge`, `carousel`)
+- semantic-release for versioning
 
-*   **Responsive Design:** Optimized for various devices, from desktops to mobile phones.
-*   **Project Showcase:** Detailed descriptions and links to my key projects.
-*   **Interactive UI Components:** Utilizes modern UI components for a dynamic experience.
+## Development
 
-## Technologies Used
+```bash
+pnpm install
+pnpm dev     # http://localhost:3000
+pnpm lint
+pnpm build
+```
 
-This project is built with the following packages:
+## Notes
 
-*   **Next.js:**
-*   **React:**
-*   **TypeScript:**
-*   **Tailwind CSS:**
-*   **PostCSS:**
-*   **Shadcn/ui:**
-
-## License
-
-This project is open-source and available under the [MIT License](LICENSE).
+- Project demos in `public/` are short, muted MP4s that only load and play when a card is active. Keep new media small (aim for a few MB per file).
+- Type and lint errors fail the build.
