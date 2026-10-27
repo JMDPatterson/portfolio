@@ -14,6 +14,8 @@ export type Project = {
   description: string
   poster: string
   demo: string
+  /** Width / height of the demo video, so the dialog can show it uncropped. */
+  mediaAspect: number
   /** Live or public URL. When null the project isn't public and the dialog shows a contact CTA. */
   link: string | null
   linkLabel?: string
@@ -29,6 +31,7 @@ export const projects: Project[] = [
     description: 'Step into the Matrix in this interactive homage that reimagines iconic scenes in dynamic ASCII.',
     poster: '/free-your-mind-poster.png',
     demo: '/free-your-mind-demo.mp4',
+    mediaAspect: 400 / 390,
     link: 'https://free-your-mind.vercel.app/',
     linkLabel: 'LAUNCH THE EXPERIENCE',
     tags: ['Next.js', 'Vercel', 'TypeScript', 'Tailwind CSS'],
@@ -50,6 +53,7 @@ export const projects: Project[] = [
     description: 'An online journal for role-playing games. You write the story, MythVox brings it to life with spoken narration and flair.',
     poster: '/MythVox.jpg',
     demo: '/MythVox.mp4',
+    mediaAspect: 426 / 240,
     link: 'https://devpost.com/software/mythvox',
     linkLabel: 'VIEW ON DEVPOST',
     tags: ['Next.js', 'Three.js', 'Supabase', 'Google Gemini', 'ElevenLabs'],
@@ -71,6 +75,7 @@ export const projects: Project[] = [
     description: 'Historical reconstruction of a country property in the South of France, blending AI with archive records.',
     poster: '/timewarp.jpg',
     demo: '/timewarp.mp4',
+    mediaAspect: 960 / 540,
     link: null,
     tags: ['Google Gemini', 'Veo 3'],
     details: {
