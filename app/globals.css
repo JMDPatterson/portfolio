@@ -78,7 +78,7 @@ html {
 }
 
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
   height: 100%;
 }
 
@@ -117,13 +117,6 @@ a:focus-visible {
 
 /* Mobile-specific optimizations */
 @media (max-width: 768px) {
-  /* Improve touch targets */
-  button,
-  a {
-    min-height: 44px;
-    min-width: 44px;
-  }
-
 
   /* Enhanced mobile typography */
   h1 {
@@ -142,13 +135,18 @@ a:focus-visible {
     padding-bottom: 2rem;
   }
 
-  /* Reduce motion for users who prefer it */
-  @media (prefers-reduced-motion: reduce) {
-    * {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
@@ -168,15 +166,6 @@ a:focus-visible {
 /* Touch-friendly interactions */
 .touch-manipulation {
   touch-action: manipulation;
-}
-
-/* Prevent text selection on interactive elements */
-button,
-.touch-manipulation {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 
 /* Improve tap highlighting */

@@ -8,6 +8,7 @@ interface GradientButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string
   variant?: "primary" | "secondary"
   size?: "sm" | "md" | "lg"
+  asChild?: boolean
 }
 
 const GradientButton = forwardRef<HTMLButtonElement, GradientButtonProps>(

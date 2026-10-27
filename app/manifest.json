@@ -1,21 +1,16 @@
 {
   "name": "James Patterson",
   "short_name": "JP",
+  "description": "Portfolio of James Patterson, a UK-based creative technologist working with AI and immersive technology.",
+  "start_url": "/",
   "icons": [
     {
-      "src": "/web-app-manifest-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/web-app-manifest-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "src": "/icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "background_color": "#000000",
   "display": "standalone"
 }
