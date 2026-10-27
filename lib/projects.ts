@@ -79,9 +79,9 @@ export const projects: Project[] = [
       approach:
         'Archive records and photographs were combined with Google Gemini and Veo 3 to reconstruct how the property looked and moved in the past.',
       design:
-        'The visual language follows period photography, so the reconstruction feels like a window into the past rather than a modern render.',
+        'The visual style was designed to reflect what was known about the property’s history, to recreate details from the past.',
       outcome:
-        'This project isn’t publicly available yet. Get in touch if you’d like to know more or see more of it.',
+        'This project isn’t publicly available. Get in touch if you’d like to know more.',
     },
   },
 ]

@@ -260,10 +260,10 @@ export default function Portfolio() {
               <h2 className="text-[12vw] sm:text-[10vw] lg:text-6xl font-bold mb-6 lg:mb-8">LET&apos;S<br />CONNECT</h2>
               <div className="space-y-4 lg:space-y-6 text-gray-300 mb-6 lg:mb-8">
                 <p className="text-sm sm:text-base lg:text-lg leading-relaxed">
-                  I&apos;m open to new roles and freelance projects in AI, immersive tech and creative development.
+                  I&apos;m open to new opportunities and freelance projects requiring AI, immersive tech, and creative development expertise.
                 </p>
                 <p className="text-sm sm:text-base lg:text-lg leading-relaxed">
-                  Hiring, have a project in mind, or just want to swap ideas on emerging technology? Get in touch at{' '}
+                  Hiring or have a project in mind? Get in touch at{' '}
                   <a href={`mailto:${CONTACT_EMAIL}`} className="text-white underline underline-offset-4 hover:text-[#76d0d0]">
                     {CONTACT_EMAIL}
                   </a>.
