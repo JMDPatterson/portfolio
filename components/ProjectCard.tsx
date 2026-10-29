@@ -21,11 +21,14 @@ export function ProjectCard({ project, isHovered, onOpen }: ProjectCardProps) {
     const video = videoRef.current
     if (!video) return
     if (isHovered) {
-      video.play().catch(() => {})
+      // AbortError just means pause() interrupted play(); anything else is a real failure
+      video.play().catch((err: DOMException) => {
+        if (err.name !== "AbortError") console.warn(`Demo failed to play: ${project.demo}`, err)
+      })
     } else {
       video.pause()
     }
-  }, [isHovered])
+  }, [isHovered, project.demo])
 
   return (
     <Card
@@ -33,30 +36,28 @@ export function ProjectCard({ project, isHovered, onOpen }: ProjectCardProps) {
     >
       <CardContent className="p-0">
         <div className="aspect-video relative rounded-t-lg overflow-hidden">
-          <>
-              <Image
-                src={project.poster}
-                alt={`${project.title} preview`}
-                fill
-                style={{ objectFit: "cover" }}
-                className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
-                  isHovered ? "opacity-0" : "opacity-100"
-                }`}
-              />
-              <video
-                ref={videoRef}
-                src={project.demo}
-                aria-hidden="true"
-                tabIndex={-1}
-                loop
-                muted
-                playsInline
-                preload="none"
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-                  isHovered ? "opacity-100" : "opacity-0"
-                }`}
-              />
-          </>
+          <Image
+            src={project.poster}
+            alt={`${project.title} preview`}
+            fill
+            style={{ objectFit: "cover" }}
+            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
+              isHovered ? "opacity-0" : "opacity-100"
+            }`}
+          />
+          <video
+            ref={videoRef}
+            src={project.demo}
+            aria-hidden="true"
+            tabIndex={-1}
+            loop
+            muted
+            playsInline
+            preload="none"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+              isHovered ? "opacity-100" : "opacity-0"
+            }`}
+          />
         </div>
         <div className="p-6 sm:p-8">
           <h3 className="text-lg sm:text-xl font-bold mb-3 text-[#ffffff]">

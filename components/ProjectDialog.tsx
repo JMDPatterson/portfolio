@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -16,7 +17,13 @@ type ProjectDialogProps = {
   onClose: () => void
 }
 
-export function ProjectDialog({ project, onClose }: ProjectDialogProps) {
+export function ProjectDialog({ project: openProject, onClose }: ProjectDialogProps) {
+  // Keep showing the last project while the close animation plays
+  const [project, setProject] = useState(openProject)
+  useEffect(() => {
+    if (openProject) setProject(openProject)
+  }, [openProject])
+
   const cta = project && (
     project.link ? (
       <GradientButton size="md" asChild className="w-full">
@@ -38,10 +45,11 @@ export function ProjectDialog({ project, onClose }: ProjectDialogProps) {
   )
 
   return (
-    <Dialog open={!!project} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-5xl w-[calc(100%-2rem)] max-h-[90vh] overflow-y-auto bg-[#1e1e1e] border-white/10 text-white p-0 gap-0">
+    <Dialog open={!!openProject} onOpenChange={(open) => !open && onClose()}>
+      {/* Scroll an inner wrapper so the close button stays pinned on small screens */}
+      <DialogContent className="max-w-5xl w-[calc(100%-2rem)] max-h-[90dvh] overflow-hidden bg-[#1e1e1e] border-white/10 text-white p-0 gap-0">
         {project && (
-          <div>
+          <div className="max-h-[90dvh] overflow-y-auto overscroll-contain">
             <div className="relative flex items-center justify-center overflow-hidden bg-black">
               {/* Blurred backdrop fills any space the uncropped video leaves */}
               <Image
@@ -77,9 +85,9 @@ export function ProjectDialog({ project, onClose }: ProjectDialogProps) {
                   <DialogTitle className="text-2xl sm:text-3xl font-bold mb-2">
                     {project.title}
                   </DialogTitle>
-              <DialogDescription className="sr-only">
-                Brief, approach, design and outcome for {project.title}
-              </DialogDescription>
+                  <DialogDescription className="sr-only">
+                    Brief, approach, design and outcome for {project.title}
+                  </DialogDescription>
                   <div className="flex flex-wrap gap-2">
                     {project.tags.map((tag) => (
                       <Badge key={tag} variant="secondary">
