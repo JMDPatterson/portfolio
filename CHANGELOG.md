@@ -1,3 +1,17 @@
+# [1.3.0](https://github.com/JMDPatterson/portfolio/compare/v1.2.0...v1.3.0) (2026-10-29)
+
+
+### Bug Fixes
+
+* **portfolio:** static export config and mobile dialog fixes ([40964e4](https://github.com/JMDPatterson/portfolio/commit/40964e424b054043dbb95567c61ad0380f73ebbb))
+
+
+### Features
+
+* **portfolio:** add project detail dialogs and email contact ([56e4bd2](https://github.com/JMDPatterson/portfolio/commit/56e4bd2f32ecfd33542a21280703cb7c5bf71476))
+* **portfolio:** enhance ProjectDialog with dynamic CTA and improve video display ([1675f21](https://github.com/JMDPatterson/portfolio/commit/1675f211545076f03048331a42d7d7989edbcb25))
+* **portfolio:** quick wins and foundations overhaul ([53e7c87](https://github.com/JMDPatterson/portfolio/commit/53e7c87159199a6c3ca5069d5a72d16d418c9c55))
+
 # [1.2.0](https://github.com/JMDPatterson/portfolio/compare/v1.1.0...v1.2.0) (2025-09-04)
 
 
