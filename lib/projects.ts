@@ -25,6 +25,29 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    id: 4,
+    slug: 'the-sitting',
+    title: 'The Sitting',
+    description: 'A mixed reality séance on Meta Quest 3, where a restless spirit answers your spoken questions on your own table.',
+    // Placeholder media: replace both files in /public, keeping the same names
+    poster: '/the-sitting-poster.jpg',
+    demo: '/the-sitting-demo.mp4',
+    mediaAspect: 16 / 9,
+    // Invite-only playtest build, so the dialog shows the contact CTA
+    link: null,
+    tags: ['WebXR', 'IWSDK', 'Meta Quest 3', 'Claude', 'ElevenLabs', 'Cloudflare Workers'],
+    details: {
+      brief:
+        'A Halloween prototype: could a séance feel real if it happened in your own home? In The Sitting your room stays around you while a scorched board, a salt circle and black candles appear on your real table, and something answers.',
+      approach:
+        'Built in WebXR with Meta’s Immersive Web SDK so it runs straight from the Quest Browser. Questions are spoken, transcribed and answered by an AI spirit, Elizabeth, through a Cloudflare Worker, and the planchette spells her replies letter by letter.',
+      design:
+        'Elizabeth has a story to tell and only gives it up as she learns to trust you. Kindness leads her towards forgiveness, while cruelty darkens the room, turns the candle flames blue and wakes the scares. A narrating Medium voiced in ElevenLabs guides you through the ritual.',
+      outcome:
+        'Demoed at VR Manchester and now in invite-only playtesting. Get in touch if you’d like to try it.',
+    },
+  },
+  {
     id: 1,
     slug: 'free-your-mind',
     title: 'Free Your Mind',
