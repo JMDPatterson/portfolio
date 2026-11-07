@@ -108,7 +108,7 @@ export const projects: Project[] = [
       design:
         'Following a period of research, video scenes were storyboarded against known and likely historical details.',
       outcome:
-        'A a series of video scenes comparing the present-day to the past. This project isn’t publicly available. Get in touch if you’d like to know more.',
+        'A series of video scenes comparing the present-day to the past. This project isn’t publicly available. Get in touch if you’d like to know more.',
     },
   },
 ]
