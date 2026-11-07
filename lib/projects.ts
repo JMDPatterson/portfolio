@@ -2,7 +2,7 @@ export const CONTACT_EMAIL = 'jmdpatterson1@gmail.com'
 
 export type ProjectDetails = {
   brief: string
-  approach: string
+  build: string
   design: string
   outcome: string
 }
@@ -27,24 +27,23 @@ export const projects: Project[] = [
   {
     id: 4,
     slug: 'the-sitting',
-    title: 'The Sitting',
-    description: 'A mixed reality séance on Meta Quest 3, where a restless spirit answers your spoken questions on your own table.',
-    // Placeholder media: replace both files in /public, keeping the same names
+    title: 'THE SITTING',
+    description: 'A mixed reality séance. Commune with restless spirits in a dynamic experience that reacts to your actions.',
     poster: '/the-sitting-poster.jpg',
     demo: '/the-sitting-demo.mp4',
     mediaAspect: 16 / 9,
     // Invite-only playtest build, so the dialog shows the contact CTA
     link: null,
-    tags: ['WebXR', 'IWSDK', 'Meta Quest 3', 'Claude', 'ElevenLabs', 'Cloudflare Workers'],
+    tags: ['WebXR', 'Meta Quest', 'Cloudflare'],
     details: {
       brief:
-        'A Halloween prototype: could a séance feel real if it happened in your own home? In The Sitting your room stays around you while a scorched board, a salt circle and black candles appear on your real table, and something answers.',
-      approach:
-        'Built in WebXR with Meta’s Immersive Web SDK so it runs straight from the Quest Browser. Questions are spoken, transcribed and answered by an AI spirit, Elizabeth, through a Cloudflare Worker, and the planchette spells her replies letter by letter.',
+        'Ever wanted to talk to a ghost? THE SITTING brings a virtual séance to the room around you, blurring the lines between what is real and what is digital.',
+      build:
+        'Built with WebXR and deployed on Cloudflare, THE SITTING runs in-browser for Meta Quest, no app install needed. The experience is guided by a narrated Medium, and features sound and environmental effects.',
       design:
-        'Elizabeth has a story to tell and only gives it up as she learns to trust you. Kindness leads her towards forgiveness, while cruelty darkens the room, turns the candle flames blue and wakes the scares. A narrating Medium voiced in ElevenLabs guides you through the ritual.',
+        'In THE SITTING, no two experiences are the same. Each spirit is an artificially intelligent entity, meaning encounters unfold dynamically and react to player interactions.',
       outcome:
-        'Demoed at VR Manchester and now in invite-only playtesting. Get in touch if you’d like to try it.',
+        'Featured as an attraction at a Halloween party in Manchester, UK, and demoed at VR Manchester (October 2026). THE SITTING is currently in invite-only playtesting. Get in touch if you’d like to try it.',
     },
   },
   {
@@ -57,16 +56,16 @@ export const projects: Project[] = [
     mediaAspect: 400 / 390,
     link: 'https://free-your-mind.vercel.app/',
     linkLabel: 'LAUNCH THE EXPERIENCE',
-    tags: ['Next.js', 'Vercel', 'TypeScript', 'Tailwind CSS'],
+    tags: ['Next.js', 'Vercel'],
     details: {
       brief:
-        'A self-initiated experiment: could a familiar cinematic moment be rebuilt as something you can play with in the browser? The aim was an interactive homage to The Matrix that turns iconic scenes into live ASCII.',
-      approach:
-        'Built with Next.js, TypeScript and Tailwind CSS and deployed on Vercel, with the ASCII rendering driving the interactive scenes.',
+        'A creative tech project exploring the capabilities of AI coding assistants. The goal was to rapidly design, build, and publicly release an interactive web experience.',
+      build:
+        'Built with Next.js, TypeScript and deployed on Vercel, movie scenes from The Matrix are manipulated and restyled using an ASCII renderer.',
       design:
-        'Scenes are rendered as dynamic ASCII in a green-on-black palette, echoing the film’s digital rain, so the look stays instantly recognisable and the interaction carries the experience.',
+        'The project illustrates how AI tools give humans the ability to manipulate digital content in real-time, echoing how in The Matrix, Neo gains the ability to manipulate the digital world around him and is no longer bound by physical limitations.',
       outcome:
-        'A live experience anyone can try in the browser, no install required.',
+        'Iconic scenes are recreated in the "digital rain" aesthetic. An interactive panel allows viewers to manipulate this effect to create different patterns. The experience is live and playable on the web.',
     },
   },
   {
@@ -79,23 +78,23 @@ export const projects: Project[] = [
     mediaAspect: 426 / 240,
     link: 'https://devpost.com/software/mythvox',
     linkLabel: 'VIEW ON DEVPOST',
-    tags: ['Next.js', 'Three.js', 'Supabase', 'Google Gemini', 'ElevenLabs'],
+    tags: ['Next.js', 'Supabase', 'Google Gemini', 'ElevenLabs'],
     details: {
       brief:
-        'Role-playing campaigns generate great stories that rarely get kept. MythVox is an online journal where players write up their sessions and have them brought to life.',
-      approach:
-        'A Next.js app with Supabase for storing journals, Google Gemini for AI-assisted storytelling and ElevenLabs for spoken narration, so every entry can be heard as well as read.',
+        'MythVox was designed to help players create compelling stories and bring their games to life. Using session notes from role-playing games, MythVox writes creative, narrated, and illustrated journal entries, turning recaps into immersive stories.',
+      build:
+        'A Next.js app with Supabase backend for storing journal content, AI integrations (Google Gemini, ElevenLabs) to augment creative writing and power realistic text-to-speech narration.',
       design:
-        'Entries are presented as an open, illustrated book (using Three.js) so the journal feels like a keepsake rather than a document, with narration and imagery layered on top of the writing.',
+        'A clean, simple interface that allows players to easily create journal entries. The design focuses on readability and immersion, with a layout that mimics a traditional journal. AI features were intentionally designed to augment, not replace human creativity.',
       outcome:
-        'Submitted to Devpost, where the project page has the full write-up and demo.',
+        'Entered into Bolt’s "World’s Largest Hackathon" 2025. The project page has the full write-up and video demo.',
     },
   },
   {
     id: 3,
     slug: 'time-warp',
     title: 'Time Warp',
-    description: 'Historical reconstruction of a country property in the South of France, blending AI with archive records.',
+    description: 'Archive photography and records turned into video scenes of a French farm house as it once was.',
     poster: '/timewarp.jpg',
     demo: '/timewarp.mp4',
     mediaAspect: 960 / 540,
@@ -103,13 +102,13 @@ export const projects: Project[] = [
     tags: ['Google Gemini', 'Veo 3'],
     details: {
       brief:
-        'Bring a country property in the South of France back to life as it once was, using the archive records that survive.',
-      approach:
-        'Archive records and photographs were combined with Google Gemini and Veo 3 to reconstruct how the property looked and moved in the past.',
+        'Reconstruct this rural Lot-et-Garonne property and bring its history back to life.',
+      build:
+        'Archive records and old photos were combined with modern photography and AI image manipulation and video creation tools (Nano Banana, Veo 3).',
       design:
-        'The visual style was designed to reflect what was known about the property’s history, to recreate details from the past.',
+        'Following a period of research, video scenes were storyboarded against known and likely historical details.',
       outcome:
-        'This project isn’t publicly available. Get in touch if you’d like to know more.',
+        'A a series of video scenes comparing the present-day to the past. This project isn’t publicly available. Get in touch if you’d like to know more.',
     },
   },
 ]

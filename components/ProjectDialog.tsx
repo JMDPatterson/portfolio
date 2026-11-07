@@ -86,7 +86,7 @@ export function ProjectDialog({ project: openProject, onClose }: ProjectDialogPr
                     {project.title}
                   </DialogTitle>
                   <DialogDescription className="sr-only">
-                    Brief, approach, design and outcome for {project.title}
+                    Brief, design, build and outcome for {project.title}
                   </DialogDescription>
                   <div className="flex flex-wrap gap-2">
                     {project.tags.map((tag) => (
@@ -103,8 +103,8 @@ export function ProjectDialog({ project: openProject, onClose }: ProjectDialogPr
                 {(
                   [
                     ["Brief", project.details.brief],
-                    ["Approach", project.details.approach],
                     ["Design", project.details.design],
+                    ["Build", project.details.build],
                     ["Outcome", project.details.outcome],
                   ] as const
                 ).map(([label, text]) => (

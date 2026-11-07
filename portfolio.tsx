@@ -15,6 +15,7 @@ import {
 import { cn } from '@/lib/utils'
 import { ProjectCard } from '@/components/ProjectCard'
 import { ProjectDialog } from '@/components/ProjectDialog'
+import { HumanMadeNote } from '@/components/HumanMadeNote'
 import { CONTACT_EMAIL, projects, type Project } from '@/lib/projects'
 
 export default function Portfolio() {
@@ -69,6 +70,8 @@ export default function Portfolio() {
       >
         Skip to content
       </a>
+
+      <HumanMadeNote />
 
       <main>
         {/* Hero Section */}
@@ -134,7 +137,7 @@ export default function Portfolio() {
               WHAT I&apos;VE<br className="lg:hidden" /> WORKED ON
             </h2>
             <p className="text-base sm:text-lg mb-8 lg:mb-12 text-gray-300 text-left md:text-center">
-              Some of the things I&rsquo;ve built while learning, experimenting, and bringing ideas to life.
+              A curation of my favorite projects: Some of the things I&rsquo;ve scoped, designed, and built.
             </p>
             {/* Mobile Carousel */}
             <div className="block lg:hidden">
@@ -225,7 +228,7 @@ export default function Portfolio() {
                 onTouchEnd={() => { if (isMobile) setIsHovered(false); }}
               >
                 <Image
-                  src="/portrait.jpg"
+                  src="/portrait-hover.jpg"
                   alt="Portrait of James Patterson"
                   width={384}
                   height={448}
@@ -235,7 +238,7 @@ export default function Portfolio() {
                   loading="lazy"
                 />
                 <Image
-                  src="/portrait-hover.jpg"
+                  src="/portrait.jpg"
                   alt=""
                   aria-hidden="true"
                   width={384}
