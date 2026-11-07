@@ -1,3 +1,11 @@
+# [1.4.0](https://github.com/JMDPatterson/portfolio/compare/v1.3.0...v1.4.0) (2026-11-07)
+
+
+### Features
+
+* **portfolio:** add draft The Sitting project card ([549cc9e](https://github.com/JMDPatterson/portfolio/commit/549cc9ebac407ff572088883d062d552a7542f67))
+* **portfolio:** add The Sitting project details and new site assets ([27bda4b](https://github.com/JMDPatterson/portfolio/commit/27bda4b8e1716c00f2c0df941ec93fc039f27fe7))
+
 # [1.3.0](https://github.com/JMDPatterson/portfolio/compare/v1.2.0...v1.3.0) (2026-10-29)
 
 
