@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/JMDPatterson/portfolio/compare/v1.4.0...v1.4.1) (2026-11-07)
+
+
+### Bug Fixes
+
+* **portfolio:** correct duplicated article in Time Warp outcome ([1026a02](https://github.com/JMDPatterson/portfolio/commit/1026a0204806bfe16e201e00ef9fb7631fba53b7))
+
 # [1.4.0](https://github.com/JMDPatterson/portfolio/compare/v1.3.0...v1.4.0) (2026-11-07)
 
 
